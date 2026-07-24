@@ -231,7 +231,6 @@
 </head>
 <body>
 
-<!-- ===== HALAMAN LOGIN ===== -->
 <div id="login-screen">
   <div class="login-box">
     <div class="eyebrow">Direktori Internal</div>
@@ -248,7 +247,6 @@
   </div>
 </div>
 
-<!-- ===== KONTEN UTAMA (baru terlihat setelah login) ===== -->
 <div id="app-content" style="display:none;">
   <header>
     <div class="eyebrow">Direktori Internal</div>
@@ -278,22 +276,9 @@
 </div>
 
 <script>
-/* ======================================================================
-   KONFIGURASI
-   ----------------------------------------------------------------------
-   1. Ganti GID_KEUANGAN dan GID_TEKNIK di bawah ini dengan gid dari
-      masing-masing tab/sheet.
-   2. Cara mendapatkan gid:
-      - Buka spreadsheet aslinya (bukan link pubhtml)
-      - Klik tab "Keuangan", lihat URL di address bar, contoh:
-        ...edit#gid=123456789   -> gid-nya adalah 123456789
-      - Lakukan hal sama untuk tab "Teknik"
-      - Kalau tab tersebut adalah sheet PERTAMA di file, gid-nya biasanya 0
-   3. Pastikan sheet sudah dipublish ke web (File > Share > Publish to web).
-   ====================================================================== */
+
 const SHEET_BASE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSqGoRVZPqNYVix0fz_dIX4nkQKsXfn0K0xC6srxbC9mNB_PA9Cwj7ohLFUNOHAWDjp8LSvlU8x4lQp/pub";
 
-// URL Web App Apps Script untuk cek login
 const LOGIN_API_URL = "https://script.google.com/macros/s/AKfycby9qlZhTBi24_qyuZznTDPtYYtmIdT_8E-nstKMFtoSHhwGCXoCXHlGgIquGmz2KbUI/exec";
 
 const DEPARTMENTS = {
@@ -324,7 +309,6 @@ function showLogin(){
   loginScreen.style.display = "flex";
 }
 
-// Cek apakah sudah pernah login di sesi browser ini
 if (sessionStorage.getItem("loggedIn") === "true"){
   showApp();
 }
@@ -366,7 +350,6 @@ logoutBtn.addEventListener("click", () => {
   showLogin();
 });
 
-/* ================== DIREKTORI PEGAWAI LOGIC ================== */
 const panel = document.getElementById("panel");
 const buttons = {
   keuangan: document.getElementById("btn-keuangan"),
@@ -381,7 +364,6 @@ function csvUrl(gid){
   return `${SHEET_BASE}?gid=${gid}&single=true&output=csv`;
 }
 
-// Parser CSV sederhana (menangani koma di dalam tanda kutip)
 function parseCSV(text){
   const rows = [];
   let row = [], field = "", inQuotes = false;
