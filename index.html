@@ -138,34 +138,144 @@
     text-align:center;
   }
   .state.error{color:#b23b3b;}
+
+  /* ---- Login screen ---- */
+  #login-screen{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .login-box{
+    width:100%;
+    max-width:360px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:32px 28px;
+    text-align:center;
+  }
+  .login-title{
+    margin:6px 0 6px;
+    font-size:26px;
+    font-weight:700;
+  }
+  .login-sub{
+    color:var(--muted);
+    font-size:13px;
+    margin:0 0 22px;
+  }
+  #login-form{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    text-align:left;
+  }
+  #login-form label{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:10px;
+  }
+  #login-form input{
+    padding:11px 12px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    font-size:14px;
+    font-family:inherit;
+    background:var(--paper);
+  }
+  #login-form input:focus{
+    outline:2px solid var(--ink);
+    outline-offset:1px;
+  }
+  #login-submit{
+    margin-top:18px;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:var(--ink);
+    color:#fff;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  #login-submit:disabled{
+    opacity:.6;
+    cursor:default;
+  }
+  #login-submit:hover:not(:disabled){opacity:.9;}
+  .login-msg{
+    min-height:18px;
+    font-size:13px;
+    margin-top:12px;
+    color:#b23b3b;
+    text-align:center;
+  }
+
+  /* ---- Logout button ---- */
+  .logout-btn{
+    margin-top:16px;
+    padding:8px 16px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:var(--panel);
+    font-family:inherit;
+    font-size:13px;
+    cursor:pointer;
+    color:var(--ink);
+  }
+  .logout-btn:hover{background:var(--paper);}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="eyebrow">Direktori Internal</div>
-  <h1>Data Pegawai per Bagian</h1>
-  <p>Pilih bagian di bawah untuk melihat daftar nama pegawai.</p>
-</header>
-
-<main>
-  <div class="menu">
-    <button class="menu-btn keuangan" id="btn-keuangan">
-      <span class="tag">Menu 1</span>
-      <h3>Bagian Keuangan</h3>
-      <p>Lihat daftar pegawai bagian keuangan</p>
-    </button>
-    <button class="menu-btn teknik" id="btn-teknik">
-      <span class="tag">Menu 2</span>
-      <h3>Bagian Teknik</h3>
-      <p>Lihat daftar pegawai bagian teknik</p>
-    </button>
+<!-- ===== HALAMAN LOGIN ===== -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="eyebrow">Direktori Internal</div>
+    <h1 class="login-title">Masuk</h1>
+    <p class="login-sub">Masukkan ID dan password untuk mengakses data pegawai.</p>
+    <form id="login-form">
+      <label for="login-username">ID</label>
+      <input type="text" id="login-username" autocomplete="username" required>
+      <label for="login-password">Password</label>
+      <input type="password" id="login-password" autocomplete="current-password" required>
+      <button type="submit" id="login-submit">Masuk</button>
+      <div class="login-msg" id="login-msg"></div>
+    </form>
   </div>
+</div>
 
-  <div class="panel" id="panel">
-    <div class="placeholder">Klik salah satu bagian di atas untuk menampilkan daftar pegawai.</div>
-  </div>
-</main>
+<!-- ===== KONTEN UTAMA (baru terlihat setelah login) ===== -->
+<div id="app-content" style="display:none;">
+  <header>
+    <div class="eyebrow">Direktori Internal</div>
+    <h1>Data Pegawai per Bagian</h1>
+    <p>Pilih bagian di bawah untuk melihat daftar nama pegawai.</p>
+    <button id="logout-btn" class="logout-btn">Keluar</button>
+  </header>
+
+  <main>
+    <div class="menu">
+      <button class="menu-btn keuangan" id="btn-keuangan">
+        <span class="tag">Menu 1</span>
+        <h3>Bagian Keuangan</h3>
+        <p>Lihat daftar pegawai bagian keuangan</p>
+      </button>
+      <button class="menu-btn teknik" id="btn-teknik">
+        <span class="tag">Menu 2</span>
+        <h3>Bagian Teknik</h3>
+        <p>Lihat daftar pegawai bagian teknik</p>
+      </button>
+    </div>
+
+    <div class="panel" id="panel">
+      <div class="placeholder">Klik salah satu bagian di atas untuk menampilkan daftar pegawai.</div>
+    </div>
+  </main>
+</div>
 
 <script>
 /* ======================================================================
@@ -183,6 +293,9 @@
    ====================================================================== */
 const SHEET_BASE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSqGoRVZPqNYVix0fz_dIX4nkQKsXfn0K0xC6srxbC9mNB_PA9Cwj7ohLFUNOHAWDjp8LSvlU8x4lQp/pub";
 
+// URL Web App Apps Script untuk cek login
+const LOGIN_API_URL = "https://script.google.com/macros/s/AKfycby9qlZhTBi24_qyuZznTDPtYYtmIdT_8E-nstKMFtoSHhwGCXoCXHlGgIquGmz2KbUI/exec";
+
 const DEPARTMENTS = {
   keuangan: {
     label: "Bagian Keuangan",
@@ -194,6 +307,66 @@ const DEPARTMENTS = {
   }
 };
 
+/* ================== LOGIN LOGIC ================== */
+const loginScreen = document.getElementById("login-screen");
+const appContent = document.getElementById("app-content");
+const loginForm = document.getElementById("login-form");
+const loginMsg = document.getElementById("login-msg");
+const loginSubmit = document.getElementById("login-submit");
+const logoutBtn = document.getElementById("logout-btn");
+
+function showApp(){
+  loginScreen.style.display = "none";
+  appContent.style.display = "block";
+}
+function showLogin(){
+  appContent.style.display = "none";
+  loginScreen.style.display = "flex";
+}
+
+// Cek apakah sudah pernah login di sesi browser ini
+if (sessionStorage.getItem("loggedIn") === "true"){
+  showApp();
+}
+
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const username = document.getElementById("login-username").value.trim();
+  const password = document.getElementById("login-password").value.trim();
+
+  loginMsg.textContent = "";
+  loginSubmit.disabled = true;
+  loginSubmit.textContent = "Memeriksa...";
+
+  try {
+    const res = await fetch(LOGIN_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" }, // hindari CORS preflight
+      body: JSON.stringify({ username, password })
+    });
+    const result = await res.json();
+
+    if (result.success){
+      sessionStorage.setItem("loggedIn", "true");
+      showApp();
+    } else {
+      loginMsg.textContent = result.message || "ID atau password salah.";
+    }
+  } catch (err){
+    loginMsg.textContent = "Gagal menghubungi server login. Coba lagi.";
+  } finally {
+    loginSubmit.disabled = false;
+    loginSubmit.textContent = "Masuk";
+  }
+});
+
+logoutBtn.addEventListener("click", () => {
+  sessionStorage.removeItem("loggedIn");
+  loginForm.reset();
+  showLogin();
+});
+
+/* ================== DIREKTORI PEGAWAI LOGIC ================== */
 const panel = document.getElementById("panel");
 const buttons = {
   keuangan: document.getElementById("btn-keuangan"),
