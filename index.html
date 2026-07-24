@@ -15,6 +15,7 @@
     --teknik:#8a4a12;
     --teknik-bg:#f6ece0;
     --muted:#726f68;
+    --primary: #2a5c8a;
   }
   *{box-sizing:border-box;}
   body{
@@ -44,6 +45,24 @@
     color:var(--muted);
     margin-top:10px;
   }
+  
+  /* --- STYLING UNTUK LOGIN --- */
+  #login-section {
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 0 24px;
+  }
+  .input-group { margin-bottom: 16px; }
+  .input-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  .input-group input { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px; font-family: inherit; font-size: 14px; }
+  .input-group input:focus { outline: none; border-color: var(--primary); }
+  #btn-login { width: 100%; padding: 14px; background: var(--ink); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+  #btn-login:hover { background: #000; }
+  #btn-login:disabled { background: var(--muted); cursor: not-allowed; }
+  .login-error { color: #b23b3b; font-size: 13px; margin-bottom: 16px; padding: 10px; background: #faeaea; border-radius: 6px; display: none; text-align: center; }
+
+  /* --- STYLING APLIKASI UTAMA --- */
+  #app-section { display: none; } /* Disembunyikan sebelum login */
   main{
     max-width:880px;
     margin:0 auto;
@@ -145,10 +164,30 @@
 <header>
   <div class="eyebrow">Direktori Internal</div>
   <h1>Data Pegawai per Bagian</h1>
-  <p>Pilih bagian di bawah untuk melihat daftar nama pegawai.</p>
+  <p id="header-desc">Silakan masuk untuk melanjutkan.</p>
 </header>
 
-<main>
+<!-- SECTION LOGIN -->
+<div id="login-section">
+  <div class="panel">
+    <h2 style="text-align: center; margin-bottom: 24px;">Login</h2>
+    <div id="login-error" class="login-error">ID atau Password salah!</div>
+    
+    <div class="input-group">
+      <label for="input-id">ID Pengguna</label>
+      <input type="text" id="input-id" placeholder="Masukkan ID">
+    </div>
+    <div class="input-group">
+      <label for="input-pass">Password</label>
+      <input type="password" id="input-pass" placeholder="Masukkan password">
+    </div>
+    
+    <button id="btn-login">Masuk</button>
+  </div>
+</div>
+
+<!-- SECTION APLIKASI UTAMA -->
+<main id="app-section">
   <div class="menu">
     <button class="menu-btn keuangan" id="btn-keuangan">
       <span class="tag">Menu 1</span>
@@ -168,47 +207,25 @@
 </main>
 
 <script>
-/* ======================================================================
-   KONFIGURASI
-   ----------------------------------------------------------------------
-   1. Ganti GID_KEUANGAN dan GID_TEKNIK di bawah ini dengan gid dari
-      masing-masing tab/sheet.
-   2. Cara mendapatkan gid:
-      - Buka spreadsheet aslinya (bukan link pubhtml)
-      - Klik tab "Keuangan", lihat URL di address bar, contoh:
-        ...edit#gid=123456789   -> gid-nya adalah 123456789
-      - Lakukan hal sama untuk tab "Teknik"
-      - Kalau tab tersebut adalah sheet PERTAMA di file, gid-nya biasanya 0
-   3. Pastikan sheet sudah dipublish ke web (File > Share > Publish to web).
-   ====================================================================== */
 const SHEET_BASE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSqGoRVZPqNYVix0fz_dIX4nkQKsXfn0K0xC6srxbC9mNB_PA9Cwj7ohLFUNOHAWDjp8LSvlU8x4lQp/pub";
 
+// KONFIGURASI GID
+const CONFIG = {
+  login_gid: "1106072435", // GID Sheet Login (Sheet "ID")
+  keuangan_gid: "186650531",
+  teknik_gid: "565200320"
+};
+
 const DEPARTMENTS = {
-  keuangan: {
-    label: "Bagian Keuangan",
-    gid: "186650531" // <-- GANTI dengan gid tab Keuangan
-  },
-  teknik: {
-    label: "Bagian Teknik",
-    gid: "565200320" // <-- GANTI dengan gid tab Teknik
-  }
+  keuangan: { label: "Bagian Keuangan", gid: CONFIG.keuangan_gid },
+  teknik: { label: "Bagian Teknik", gid: CONFIG.teknik_gid }
 };
-
-const panel = document.getElementById("panel");
-const buttons = {
-  keuangan: document.getElementById("btn-keuangan"),
-  teknik: document.getElementById("btn-teknik")
-};
-
-Object.keys(buttons).forEach(key => {
-  buttons[key].addEventListener("click", () => loadDepartment(key));
-});
 
 function csvUrl(gid){
   return `${SHEET_BASE}?gid=${gid}&single=true&output=csv`;
 }
 
-// Parser CSV sederhana (menangani koma di dalam tanda kutip)
+// Parser CSV
 function parseCSV(text){
   const rows = [];
   let row = [], field = "", inQuotes = false;
@@ -230,6 +247,80 @@ function parseCSV(text){
   if (field.length || row.length){ row.push(field); rows.push(row); }
   return rows.filter(r => r.some(f => f.trim() !== ""));
 }
+
+/* =========================================
+   LOGIKA LOGIN
+   ========================================= */
+document.getElementById('btn-login').addEventListener('click', async () => {
+  const inputId = document.getElementById('input-id').value.trim();
+  const inputPass = document.getElementById('input-pass').value.trim();
+  const btn = document.getElementById('btn-login');
+  const errorDiv = document.getElementById('login-error');
+
+  if(!inputId || !inputPass){
+    errorDiv.textContent = "ID dan Password harus diisi.";
+    errorDiv.style.display = "block";
+    return;
+  }
+
+  // Tampilan loading
+  btn.textContent = "Memeriksa...";
+  btn.disabled = true;
+  errorDiv.style.display = "none";
+
+  try {
+    const res = await fetch(csvUrl(CONFIG.login_gid));
+    if (!res.ok) throw new Error("Gagal memeriksa data login.");
+    const text = await res.text();
+    const rows = parseCSV(text);
+
+    let isValid = false;
+    let userName = "";
+
+    // Mulai dari i=1 untuk melewati header tabel
+    for(let i = 1; i < rows.length; i++){
+      const row = rows[i];
+      // Asumsi: Kolom 0 adalah ID, Kolom 1 adalah Password, Kolom 2 adalah Nama
+      if(row[0] && row[1]){
+        if(row[0].trim() === inputId && row[1].trim() === inputPass){
+          isValid = true;
+          userName = row[2] ? row[2].trim() : "User";
+          break;
+        }
+      }
+    }
+
+    if(isValid){
+      // Sembunyikan login, tampilkan aplikasi
+      document.getElementById('login-section').style.display = "none";
+      document.getElementById('app-section').style.display = "block";
+      document.getElementById('header-desc').textContent = `Selamat datang, ${userName}. Pilih bagian di bawah.`;
+    } else {
+      errorDiv.textContent = "ID atau Password salah!";
+      errorDiv.style.display = "block";
+    }
+
+  } catch (err) {
+    errorDiv.textContent = err.message;
+    errorDiv.style.display = "block";
+  } finally {
+    btn.textContent = "Masuk";
+    btn.disabled = false;
+  }
+});
+
+/* =========================================
+   LOGIKA APLIKASI UTAMA
+   ========================================= */
+const panel = document.getElementById("panel");
+const buttons = {
+  keuangan: document.getElementById("btn-keuangan"),
+  teknik: document.getElementById("btn-teknik")
+};
+
+Object.keys(buttons).forEach(key => {
+  buttons[key].addEventListener("click", () => loadDepartment(key));
+});
 
 function findNameColumnIndex(header){
   const idx = header.findIndex(h => h.toLowerCase().trim().includes("nama"));
@@ -273,8 +364,7 @@ async function loadDepartment(key){
       </ul>
     `;
   } catch (err){
-    panel.innerHTML = `<div class="state error">Terjadi kesalahan saat memuat data: ${escapeHtml(err.message)}<br><br>
-      Pastikan sheet sudah dipublish ke web dan gid sudah diisi dengan benar di dalam kode.</div>`;
+    panel.innerHTML = `<div class="state error">Terjadi kesalahan: ${escapeHtml(err.message)}</div>`;
   }
 }
 
