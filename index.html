@@ -3,17 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Direktori Pegawai</title>
+<title>Dashboard Master WO</title>
 <style>
   :root{
     --ink:#1c2230;
     --paper:#f6f4ee;
     --panel:#ffffff;
     --line:#dfdad0;
-    --keuangan:#2f6f4f;
-    --keuangan-bg:#eaf3ec;
-    --teknik:#8a4a12;
-    --teknik-bg:#f6ece0;
+    --master:#1c2230;
+    --mech:#2f6f4f;
+    --elec:#8a4a12;
+    --mod:#3b5998;
+    --pending:#b28b22;
+    --approved:#2f6f4f;
+    --rejected:#b23b3b;
     --muted:#726f68;
   }
   *{box-sizing:border-box;}
@@ -27,13 +30,6 @@
   header{
     padding:48px 24px 24px;
     text-align:center;
-  }
-  header .eyebrow{
-    letter-spacing:.14em;
-    text-transform:uppercase;
-    font-size:12px;
-    color:var(--muted);
-    margin-bottom:8px;
   }
   header h1{
     font-size:clamp(28px,4vw,40px);
@@ -49,44 +45,61 @@
     margin:0 auto;
     padding:0 24px 64px;
   }
-  .menu{
+  
+  /* Menu Utama */
+  .main-menu{
     display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px;
-    margin-bottom:28px;
+    grid-template-columns:repeat(4, 1fr);
+    gap:12px;
+    margin-bottom:20px;
   }
-  @media (max-width:560px){
-    .menu{grid-template-columns:1fr;}
+  @media (max-width:600px){
+    .main-menu{grid-template-columns:1fr 1fr;}
   }
-  .menu-btn{
+  .btn-main{
+    padding:16px 10px;
     border:1px solid var(--line);
     background:var(--panel);
-    border-radius:14px;
-    padding:22px 20px;
-    text-align:left;
+    border-radius:12px;
+    font-size:15px;
+    font-weight:600;
     cursor:pointer;
-    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    transition:all .15s;
     font-family:inherit;
+    color:var(--muted);
   }
-  .menu-btn:hover{
-    transform:translateY(-2px);
-    box-shadow:0 8px 20px rgba(0,0,0,.06);
+  .btn-main.active{
+    border-color:var(--ink);
+    color:var(--ink);
+    box-shadow:0 4px 12px rgba(0,0,0,.05);
   }
-  .menu-btn .tag{
-    display:inline-block;
-    font-size:11px;
-    letter-spacing:.08em;
-    text-transform:uppercase;
-    padding:3px 9px;
-    border-radius:999px;
-    margin-bottom:10px;
-  }
-  .menu-btn.keuangan .tag{background:var(--keuangan-bg); color:var(--keuangan);}
-  .menu-btn.teknik .tag{background:var(--teknik-bg); color:var(--teknik);}
-  .menu-btn.active{border-color:var(--ink);}
-  .menu-btn h3{margin:0 0 4px; font-size:19px;}
-  .menu-btn p{margin:0; font-size:13px; color:var(--muted);}
+  .btn-main:hover:not(.active){ background:var(--paper); }
 
+  /* Sub Menu */
+  .sub-menu{
+    display:flex;
+    gap:10px;
+    margin-bottom:28px;
+    justify-content:center;
+  }
+  .btn-sub{
+    padding:8px 18px;
+    border:1px solid var(--line);
+    border-radius:99px;
+    background:var(--panel);
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    color:var(--muted);
+    transition:all .15s;
+  }
+  .btn-sub.active{
+    background:var(--ink);
+    color:#fff;
+    border-color:var(--ink);
+  }
+
+  /* Panel Data */
   .panel{
     background:var(--panel);
     border:1px solid var(--line);
@@ -94,153 +107,48 @@
     padding:26px;
     min-height:160px;
   }
-  .panel h2{
-    margin:0 0 4px;
-    font-size:20px;
+  .panel h2{ margin:0 0 4px; font-size:20px; text-transform:capitalize; }
+  .panel .count{ font-size:13px; color:var(--muted); margin-bottom:18px; }
+  
+  ul.data-list{
+    list-style:none; margin:0; padding:0; display:grid; gap:10px;
   }
-  .panel .count{
-    font-size:13px;
-    color:var(--muted);
-    margin-bottom:18px;
-  }
-  ul.employee-list{
-    list-style:none;
-    margin:0;
-    padding:0;
-    display:grid;
-    gap:10px;
-  }
-  ul.employee-list li{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:12px 14px;
-    border:1px solid var(--line);
-    border-radius:10px;
-    background:var(--paper);
-  }
-  ul.employee-list li .num{
-    width:26px;
-    height:26px;
-    border-radius:50%;
-    background:var(--ink);
-    color:#fff;
-    font-size:12px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-shrink:0;
-  }
-  .placeholder, .state{
-    color:var(--muted);
+  ul.data-list li{
+    display:flex; align-items:center; gap:12px;
+    padding:12px 14px; border:1px solid var(--line);
+    border-radius:10px; background:var(--paper);
     font-size:14px;
-    padding:20px 0;
-    text-align:center;
   }
-  .state.error{color:#b23b3b;}
+  ul.data-list li .num{
+    width:26px; height:26px; border-radius:50%;
+    background:var(--ink); color:#fff; font-size:12px;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  
+  .placeholder, .state{ color:var(--muted); font-size:14px; padding:20px 0; text-align:center; }
+  .state.error{ color:var(--rejected); }
 
-  /* ---- Login screen ---- */
-  #login-screen{
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:24px;
-  }
-  .login-box{
-    width:100%;
-    max-width:360px;
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:16px;
-    padding:32px 28px;
-    text-align:center;
-  }
-  .login-title{
-    margin:6px 0 6px;
-    font-size:26px;
-    font-weight:700;
-  }
-  .login-sub{
-    color:var(--muted);
-    font-size:13px;
-    margin:0 0 22px;
-  }
-  #login-form{
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-    text-align:left;
-  }
-  #login-form label{
-    font-size:12px;
-    color:var(--muted);
-    margin-top:10px;
-  }
-  #login-form input{
-    padding:11px 12px;
-    border:1px solid var(--line);
-    border-radius:8px;
-    font-size:14px;
-    font-family:inherit;
-    background:var(--paper);
-  }
-  #login-form input:focus{
-    outline:2px solid var(--ink);
-    outline-offset:1px;
-  }
-  #login-submit{
-    margin-top:18px;
-    padding:12px;
-    border:none;
-    border-radius:8px;
-    background:var(--ink);
-    color:#fff;
-    font-size:14px;
-    font-weight:600;
-    cursor:pointer;
-    font-family:inherit;
-  }
-  #login-submit:disabled{
-    opacity:.6;
-    cursor:default;
-  }
-  #login-submit:hover:not(:disabled){opacity:.9;}
-  .login-msg{
-    min-height:18px;
-    font-size:13px;
-    margin-top:12px;
-    color:#b23b3b;
-    text-align:center;
-  }
-
-  /* ---- Logout button ---- */
-  .logout-btn{
-    margin-top:16px;
-    padding:8px 16px;
-    border:1px solid var(--line);
-    border-radius:8px;
-    background:var(--panel);
-    font-family:inherit;
-    font-size:13px;
-    cursor:pointer;
-    color:var(--ink);
-  }
-  .logout-btn:hover{background:var(--paper);}
+  /* Login & Logout (Sama seperti sebelumnya) */
+  #login-screen{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+  .login-box{ width:100%; max-width:360px; background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:32px 28px; text-align:center; }
+  #login-form{ display:flex; flex-direction:column; gap:6px; text-align:left; margin-top:20px;}
+  #login-form label{ font-size:12px; color:var(--muted); margin-top:10px; }
+  #login-form input{ padding:11px 12px; border:1px solid var(--line); border-radius:8px; font-size:14px; }
+  #login-submit{ margin-top:18px; padding:12px; border:none; border-radius:8px; background:var(--ink); color:#fff; cursor:pointer; font-weight:600; }
+  .logout-btn{ margin-top:16px; padding:8px 16px; border:1px solid var(--line); border-radius:8px; background:var(--panel); font-size:13px; cursor:pointer; }
+  .login-msg{ color:var(--rejected); font-size:13px; margin-top:10px; text-align:center;}
 </style>
 </head>
 <body>
 
 <div id="login-screen">
   <div class="login-box">
-    <div class="eyebrow">Direktori Internal</div>
-    <h1 class="login-title">Masuk</h1>
-    <p class="login-sub">Masukkan ID dan password untuk mengakses data pegawai.</p>
+    <h1>Aplikasi WO</h1>
     <form id="login-form">
-      <label for="login-username">ID</label>
-      <input type="text" id="login-username" autocomplete="username" required>
-      <label for="login-password">Password</label>
-      <input type="password" id="login-password" autocomplete="current-password" required>
+      <label>ID</label>
+      <input type="text" id="login-username" required>
+      <label>Password</label>
+      <input type="password" id="login-password" required>
       <button type="submit" id="login-submit">Masuk</button>
       <div class="login-msg" id="login-msg"></div>
     </form>
@@ -249,117 +157,97 @@
 
 <div id="app-content" style="display:none;">
   <header>
-    <div class="eyebrow">Direktori Internal</div>
-    <h1>Data Pegawai per Bagian</h1>
-    <p>Pilih bagian di bawah untuk melihat daftar nama pegawai.</p>
+    <h1>Dashboard Master WO</h1>
+    <p>Pantau keseluruhan tiket Work Order secara realtime.</p>
     <button id="logout-btn" class="logout-btn">Keluar</button>
   </header>
 
   <main>
-    <div class="menu">
-      <button class="menu-btn keuangan" id="btn-keuangan">
-        <span class="tag">Menu 1</span>
-        <h3>Bagian Keuangan</h3>
-        <p>Lihat daftar pegawai bagian keuangan</p>
-      </button>
-      <button class="menu-btn teknik" id="btn-teknik">
-        <span class="tag">Menu 2</span>
-        <h3>Bagian Teknik</h3>
-        <p>Lihat daftar pegawai bagian teknik</p>
-      </button>
+    <!-- Menu Utama (Kategori) -->
+    <div class="main-menu">
+      <button class="btn-main active" data-category="master">Master WO</button>
+      <button class="btn-main" data-category="mechanical">Mechanical</button>
+      <button class="btn-main" data-category="electrical">Electrical</button>
+      <button class="btn-main" data-category="modification">Modification</button>
+    </div>
+
+    <!-- Sub Menu (Status) - Disembunyikan saat Master WO aktif -->
+    <div class="sub-menu" id="sub-menu-container" style="display:none;">
+      <button class="btn-sub active" data-status="pending">Pending Approval</button>
+      <button class="btn-sub" data-status="approved">Approved</button>
+      <button class="btn-sub" data-status="rejected">Rejected</button>
     </div>
 
     <div class="panel" id="panel">
-      <div class="placeholder">Klik salah satu bagian di atas untuk menampilkan daftar pegawai.</div>
+      <div class="placeholder">Memuat data...</div>
     </div>
   </main>
 </div>
 
 <script>
+// --- KONFIGURASI URL & GID (TOTAL 10 SHEET) ---
+const SHEET_BASE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS7E84yJuZInmkqB0NJMMPpPAaGHvd9sIZHwZvzR4tROm9k9I2k6gqCd0ksKiVA4l08jJxVRF5uP-Rm/pub"; 
+const LOGIN_API_URL = "https://script.google.com/a/macros/std.stei.itb.ac.id/s/AKfycbz3i2MgKIKGkFPYr7CLn-TzCBGc4E1h0pNIIg0H5wfP3Tk4MpdT8SLU52VjjwzG0-qe/exec";
 
-const SHEET_BASE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSqGoRVZPqNYVix0fz_dIX4nkQKsXfn0K0xC6srxbC9mNB_PA9Cwj7ohLFUNOHAWDjp8LSvlU8x4lQp/pub";
-
-const LOGIN_API_URL = "https://script.google.com/macros/s/AKfycby9qlZhTBi24_qyuZznTDPtYYtmIdT_8E-nstKMFtoSHhwGCXoCXHlGgIquGmz2KbUI/exec";
-
-const DEPARTMENTS = {
-  keuangan: {
-    label: "Bagian Keuangan",
-    gid: "186650531"
-  },
-  teknik: {
-    label: "Bagian Teknik",
-    gid: "565200320"
-  }
+const SHEETS_GID = {
+  master: "172504616",
+  
+  mechanical_pending: "83528035",
+  mechanical_approved: "709234165",
+  mechanical_rejected: "1634138009",
+  
+  electrical_pending: "1373466339",
+  electrical_approved: "1933576686",
+  electrical_rejected: "1253140954",
+  
+  modification_pending: "2072013900",
+  modification_approved: "697781984",
+  modification_rejected: "309859811"
 };
 
-/* ================== LOGIN LOGIC ================== */
-const loginScreen = document.getElementById("login-screen");
-const appContent = document.getElementById("app-content");
-const loginForm = document.getElementById("login-form");
-const loginMsg = document.getElementById("login-msg");
-const loginSubmit = document.getElementById("login-submit");
-const logoutBtn = document.getElementById("logout-btn");
+/* ================= LOGIKA UI & NAVIGASI ================= */
+let activeCategory = "master"; 
+let activeStatus = "pending"; 
 
-function showApp(){
-  loginScreen.style.display = "none";
-  appContent.style.display = "block";
-}
-function showLogin(){
-  appContent.style.display = "none";
-  loginScreen.style.display = "flex";
-}
-
-if (sessionStorage.getItem("loggedIn") === "true"){
-  showApp();
-}
-
-loginForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const username = document.getElementById("login-username").value.trim();
-  const password = document.getElementById("login-password").value.trim();
-
-  loginMsg.textContent = "";
-  loginSubmit.disabled = true;
-  loginSubmit.textContent = "Memeriksa...";
-
-  try {
-    const res = await fetch(LOGIN_API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" }, // hindari CORS preflight
-      body: JSON.stringify({ username, password })
-    });
-    const result = await res.json();
-
-    if (result.success){
-      sessionStorage.setItem("loggedIn", "true");
-      showApp();
-    } else {
-      loginMsg.textContent = result.message || "ID atau password salah.";
-    }
-  } catch (err){
-    loginMsg.textContent = "Gagal menghubungi server login. Coba lagi.";
-  } finally {
-    loginSubmit.disabled = false;
-    loginSubmit.textContent = "Masuk";
-  }
-});
-
-logoutBtn.addEventListener("click", () => {
-  sessionStorage.removeItem("loggedIn");
-  loginForm.reset();
-  showLogin();
-});
-
+const mainBtns = document.querySelectorAll(".btn-main");
+const subBtns = document.querySelectorAll(".btn-sub");
+const subMenuContainer = document.getElementById("sub-menu-container");
 const panel = document.getElementById("panel");
-const buttons = {
-  keuangan: document.getElementById("btn-keuangan"),
-  teknik: document.getElementById("btn-teknik")
-};
 
-Object.keys(buttons).forEach(key => {
-  buttons[key].addEventListener("click", () => loadDepartment(key));
+// Event saat Menu Utama diklik
+mainBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    activeCategory = btn.getAttribute("data-category");
+    
+    // Update tombol aktif
+    mainBtns.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    // Tampilkan/sembunyikan sub-menu
+    if(activeCategory === "master"){
+      subMenuContainer.style.display = "none";
+    } else {
+      subMenuContainer.style.display = "flex";
+    }
+    
+    loadData();
+  });
 });
 
+// Event saat Sub Menu diklik
+subBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    activeStatus = btn.getAttribute("data-status");
+    
+    // Update tombol aktif
+    subBtns.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    
+    loadData();
+  });
+});
+
+/* ================= LOGIKA PENGAMBILAN DATA CSV ================= */
 function csvUrl(gid){
   return `${SHEET_BASE}?gid=${gid}&single=true&output=csv`;
 }
@@ -386,50 +274,62 @@ function parseCSV(text){
   return rows.filter(r => r.some(f => f.trim() !== ""));
 }
 
-function findNameColumnIndex(header){
-  const idx = header.findIndex(h => h.toLowerCase().trim().includes("nama"));
-  return idx !== -1 ? idx : 0;
+// Cari kolom Request ID / Nomor WO dan Nama pemohon secara dinamis
+function findColumnsIndex(header){
+  const woIdx = header.findIndex(h => h.toLowerCase().trim().includes("nomor wo"));
+  const reqIdx = header.findIndex(h => h.toLowerCase().trim().includes("request id"));
+  const nameIdx = header.findIndex(h => h.toLowerCase().trim() === "nama" || h.toLowerCase().trim().includes("nama pemohon"));
+  
+  return {
+    idIdx: woIdx !== -1 ? woIdx : (reqIdx !== -1 ? reqIdx : 0),
+    nameIdx: nameIdx !== -1 ? nameIdx : 1
+  };
 }
 
-async function loadDepartment(key){
-  Object.values(buttons).forEach(b => b.classList.remove("active"));
-  buttons[key].classList.add("active");
-
-  const dept = DEPARTMENTS[key];
-  panel.innerHTML = `<div class="state">Memuat data ${dept.label}...</div>`;
+async function loadData(){
+  // Tentukan kunci sheet yang akan diambil
+  const sheetKey = activeCategory === "master" ? "master" : `${activeCategory}_${activeStatus}`;
+  const gid = SHEETS_GID[sheetKey];
+  
+  // Format Judul Panel
+  let title = activeCategory === "master" ? "Semua Data Master WO" : `Data ${activeCategory} - ${activeStatus}`;
+  
+  panel.innerHTML = `<div class="state">Memuat ${title}...</div>`;
 
   try {
-    const res = await fetch(csvUrl(dept.gid));
+    const res = await fetch(csvUrl(gid));
     if (!res.ok) throw new Error("Gagal mengambil data (status " + res.status + ")");
     const text = await res.text();
     const rows = parseCSV(text);
 
-    if (rows.length === 0){
-      panel.innerHTML = `<div class="state error">Data ${dept.label} kosong atau tidak ditemukan.</div>`;
+    if (rows.length < 2){
+      panel.innerHTML = `<h2>${title}</h2><div class="state error">Data kosong.</div>`;
       return;
     }
 
     const header = rows[0];
-    const nameIdx = findNameColumnIndex(header);
-    const names = rows.slice(1)
-      .map(r => (r[nameIdx] || "").trim())
+    const cols = findColumnsIndex(header);
+    
+    // Gabungkan ID dan Nama (Contoh: "WR-UTL-001 - Budi")
+    const dataItems = rows.slice(1)
+      .map(r => {
+         const req = (r[cols.idIdx] || "").trim();
+         const name = (r[cols.nameIdx] || "").trim();
+         if(req && name) return `<strong>${escapeHtml(req)}</strong> &mdash; ${escapeHtml(name)}`;
+         return escapeHtml(req || name);
+      })
       .filter(n => n !== "");
 
-    if (names.length === 0){
-      panel.innerHTML = `<div class="state error">Tidak ada nama pegawai yang terbaca di ${dept.label}.</div>`;
-      return;
-    }
-
     panel.innerHTML = `
-      <h2>${dept.label}</h2>
-      <div class="count">${names.length} pegawai</div>
-      <ul class="employee-list">
-        ${names.map((n, i) => `<li><span class="num">${i+1}</span>${escapeHtml(n)}</li>`).join("")}
+      <h2>${title}</h2>
+      <div class="count">${dataItems.length} tiket ditemukan</div>
+      <ul class="data-list">
+        ${dataItems.map((n, i) => `<li><span class="num">${i+1}</span><div>${n}</div></li>`).join("")}
       </ul>
     `;
   } catch (err){
-    panel.innerHTML = `<div class="state error">Terjadi kesalahan saat memuat data: ${escapeHtml(err.message)}<br><br>
-      Pastikan sheet sudah dipublish ke web dan gid sudah diisi dengan benar di dalam kode.</div>`;
+    panel.innerHTML = `<h2>${title}</h2>
+      <div class="state error">Gagal memuat: ${escapeHtml(err.message)}<br><br>Pastikan GID sudah disetting.</div>`;
   }
 }
 
@@ -438,6 +338,60 @@ function escapeHtml(str){
   div.textContent = str;
   return div.innerHTML;
 }
+
+/* ================= LOGIKA LOGIN ================= */
+// (Kode Login dan Logout tetap dipertahankan persis sama)
+const loginScreen = document.getElementById("login-screen");
+const appContent = document.getElementById("app-content");
+const loginForm = document.getElementById("login-form");
+const loginMsg = document.getElementById("login-msg");
+const loginSubmit = document.getElementById("login-submit");
+
+if (sessionStorage.getItem("loggedIn") === "true"){
+  loginScreen.style.display = "none";
+  appContent.style.display = "block";
+  loadData(); // Load Master WO saat pertama masuk
+}
+
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const username = document.getElementById("login-username").value.trim();
+  const password = document.getElementById("login-password").value.trim();
+
+  loginMsg.textContent = "";
+  loginSubmit.disabled = true;
+  loginSubmit.textContent = "Memeriksa...";
+
+  try {
+    const res = await fetch(LOGIN_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ username, password })
+    });
+    const result = await res.json();
+
+    if (result.success){
+      sessionStorage.setItem("loggedIn", "true");
+      loginScreen.style.display = "none";
+      appContent.style.display = "block";
+      loadData(); // Load Master WO saat login berhasil
+    } else {
+      loginMsg.textContent = result.message || "ID atau password salah.";
+    }
+  } catch (err){
+    loginMsg.textContent = "Gagal menghubungi server login.";
+  } finally {
+    loginSubmit.disabled = false;
+    loginSubmit.textContent = "Masuk";
+  }
+});
+
+document.getElementById("logout-btn").addEventListener("click", () => {
+  sessionStorage.removeItem("loggedIn");
+  loginForm.reset();
+  appContent.style.display = "none";
+  loginScreen.style.display = "flex";
+});
 </script>
 
 </body>
