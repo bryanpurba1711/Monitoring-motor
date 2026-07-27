@@ -950,8 +950,19 @@ function showModal(originalIndex, reqId) {
 
 // Fungsi untuk mengirim aksi ke Apps Script API
 async function executeAction(actionType) {
-  if (!confirm(`Anda yakin ingin melakukan ${actionType} pada tiket ini?`)) {
-    return;
+  let rejectReason = "";
+  
+  // Meminta konfirmasi atau alasan sebelum memproses aksi
+  if (actionType === "rejected") {
+    rejectReason = prompt("Mohon masukkan alasan menolak (Reject) tiket ini:");
+    if (rejectReason === null || rejectReason.trim() === "") {
+      alert("Aksi dibatalkan: Alasan penolakan wajib diisi!");
+      return;
+    }
+  } else {
+    if (!confirm(`Anda yakin ingin menerima (Approve) tiket ini?`)) {
+      return;
+    }
   }
 
   const btnFooter = document.getElementById("action-footer");
@@ -972,7 +983,8 @@ async function executeAction(actionType) {
         type: "action", 
         action: actionType, 
         category: activeCategory, 
-        requestId: targetRequestId 
+        requestId: targetRequestId,
+        rejectReason: rejectReason // Mengirim alasan reject ke server
       })
     });
     
