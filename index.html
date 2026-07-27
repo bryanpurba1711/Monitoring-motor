@@ -79,7 +79,7 @@
   .sub-menu{
     display:flex;
     gap:10px;
-    margin-bottom:28px;
+    margin-bottom:20px;
     justify-content:center;
   }
   .btn-sub{
@@ -99,6 +99,39 @@
     border-color:var(--ink);
   }
 
+  /* Filter Bar */
+  .filter-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    align-items: center;
+    background: var(--panel);
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+  .filter-bar select, .filter-bar input, .filter-bar button {
+    padding: 10px 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    background: var(--paper);
+  }
+  .filter-bar select:focus, .filter-bar input:focus {
+    outline: 2px solid var(--ink);
+    outline-offset: 1px;
+  }
+  .filter-bar button {
+    background: var(--ink);
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    border: none;
+  }
+  .filter-bar button:hover { opacity: 0.9; }
+
   /* Panel Data */
   .panel{
     background:var(--panel);
@@ -117,7 +150,12 @@
     display:flex; align-items:center; gap:12px;
     padding:12px 14px; border:1px solid var(--line);
     border-radius:10px; background:var(--paper);
-    font-size:14px;
+    font-size:14px; cursor:pointer; transition: transform 0.1s, box-shadow 0.1s;
+  }
+  ul.data-list li:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    border-color: var(--ink);
   }
   ul.data-list li .num{
     width:26px; height:26px; border-radius:50%;
@@ -128,7 +166,44 @@
   .placeholder, .state{ color:var(--muted); font-size:14px; padding:20px 0; text-align:center; }
   .state.error{ color:var(--rejected); }
 
-  /* Login & Logout (Sama seperti sebelumnya) */
+  /* Modal Detail */
+  .modal-overlay {
+    display: none;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 1000;
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal-content {
+    background: var(--panel);
+    width: 100%; max-width: 600px;
+    max-height: 85vh;
+    border-radius: 16px;
+    display: flex; flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  }
+  .modal-header {
+    padding: 20px 24px; border-bottom: 1px solid var(--line);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .modal-header h3 { margin: 0; font-size: 18px; }
+  .close-btn {
+    background: none; border: none; font-size: 24px; cursor: pointer; color: var(--muted);
+  }
+  .close-btn:hover { color: var(--ink); }
+  .modal-body {
+    padding: 24px; overflow-y: auto;
+  }
+  .detail-row {
+    display: flex; flex-direction: column; gap: 4px;
+    margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px dashed var(--line);
+  }
+  .detail-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .detail-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .detail-value { font-size: 15px; color: var(--ink); white-space: pre-wrap; }
+
+  /* Login & Logout */
   #login-screen{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
   .login-box{ width:100%; max-width:360px; background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:32px 28px; text-align:center; }
   #login-form{ display:flex; flex-direction:column; gap:6px; text-align:left; margin-top:20px;}
@@ -171,11 +246,32 @@
       <button class="btn-main" data-category="modification">Modification</button>
     </div>
 
-    <!-- Sub Menu (Status) - Disembunyikan saat Master WO aktif -->
+    <!-- Sub Menu (Status) -->
     <div class="sub-menu" id="sub-menu-container" style="display:none;">
       <button class="btn-sub active" data-status="pending">Pending Approval</button>
       <button class="btn-sub" data-status="approved">Approved</button>
       <button class="btn-sub" data-status="rejected">Rejected</button>
+    </div>
+
+    <!-- Filter Waktu -->
+    <div class="filter-bar">
+      <select id="filter-type">
+        <option value="all">Semua Waktu</option>
+        <option value="single">Tanggal Tertentu</option>
+        <option value="range">Rentang Tanggal</option>
+      </select>
+      
+      <div id="filter-date-1-container" style="display:none; align-items:center; gap:8px;">
+        <span style="font-size:13px; color:var(--muted);">Tanggal:</span>
+        <input type="date" id="filter-date-1">
+      </div>
+      
+      <div id="filter-date-2-container" style="display:none; align-items:center; gap:8px;">
+        <span style="font-size:13px; color:var(--muted);">s/d</span>
+        <input type="date" id="filter-date-2">
+      </div>
+      
+      <button id="btn-apply-filter">Terapkan Filter</button>
     </div>
 
     <div class="panel" id="panel">
@@ -184,22 +280,32 @@
   </main>
 </div>
 
+<!-- Modal Detail -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="modal-title">Detail Work Order</h3>
+      <button class="close-btn" id="modal-close">&times;</button>
+    </div>
+    <div class="modal-body" id="modal-body">
+      <!-- Detail dirender disini via JS -->
+    </div>
+  </div>
+</div>
+
 <script>
-// --- KONFIGURASI URL & GID (TOTAL 10 SHEET) ---
+// --- KONFIGURASI URL & GID ---
 const SHEET_BASE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS7E84yJuZInmkqB0NJMMPpPAaGHvd9sIZHwZvzR4tROm9k9I2k6gqCd0ksKiVA4l08jJxVRF5uP-Rm/pub"; 
-const LOGIN_API_URL = "https://script.google.com/macros/library/d/1J5XIlui7E4Js07jx63sfhmX-hap0x4_XlHo-4kgglXbbQ3y0sc8nj55c/1";
+const LOGIN_API_URL = "https://script.google.com/a/macros/std.stei.itb.ac.id/s/AKfycbz3i2MgKIKGkFPYr7CLn-TzCBGc4E1h0pNIIg0H5wfP3Tk4MpdT8SLU52VjjwzG0-qe/exec";
 
 const SHEETS_GID = {
   master: "172504616",
-  
   mechanical_pending: "83528035",
   mechanical_approved: "709234165",
   mechanical_rejected: "1634138009",
-  
   electrical_pending: "1373466339",
   electrical_approved: "1933576686",
   electrical_rejected: "1253140954",
-  
   modification_pending: "2072013900",
   modification_approved: "697781984",
   modification_rejected: "309859811"
@@ -209,45 +315,83 @@ const SHEETS_GID = {
 let activeCategory = "master"; 
 let activeStatus = "pending"; 
 
+// Variabel untuk menyimpan data mentah setelah di-fetch
+let currentHeaders = [];
+let currentDataRows = [];
+
 const mainBtns = document.querySelectorAll(".btn-main");
 const subBtns = document.querySelectorAll(".btn-sub");
 const subMenuContainer = document.getElementById("sub-menu-container");
 const panel = document.getElementById("panel");
 
-// Event saat Menu Utama diklik
 mainBtns.forEach(btn => {
   btn.addEventListener("click", () => {
     activeCategory = btn.getAttribute("data-category");
-    
-    // Update tombol aktif
     mainBtns.forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
 
-    // Tampilkan/sembunyikan sub-menu
     if(activeCategory === "master"){
       subMenuContainer.style.display = "none";
     } else {
       subMenuContainer.style.display = "flex";
     }
-    
-    loadData();
+    fetchData();
   });
 });
 
-// Event saat Sub Menu diklik
 subBtns.forEach(btn => {
   btn.addEventListener("click", () => {
     activeStatus = btn.getAttribute("data-status");
-    
-    // Update tombol aktif
     subBtns.forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
-    
-    loadData();
+    fetchData();
   });
 });
 
-/* ================= LOGIKA PENGAMBILAN DATA CSV ================= */
+/* ================= LOGIKA FILTER WAKTU ================= */
+const filterType = document.getElementById("filter-type");
+const date1Cont = document.getElementById("filter-date-1-container");
+const date2Cont = document.getElementById("filter-date-2-container");
+const date1Input = document.getElementById("filter-date-1");
+const date2Input = document.getElementById("filter-date-2");
+const btnApplyFilter = document.getElementById("btn-apply-filter");
+
+filterType.addEventListener("change", () => {
+  const val = filterType.value;
+  if(val === "all") {
+    date1Cont.style.display = "none";
+    date2Cont.style.display = "none";
+  } else if(val === "single") {
+    date1Cont.style.display = "flex";
+    date2Cont.style.display = "none";
+  } else if(val === "range") {
+    date1Cont.style.display = "flex";
+    date2Cont.style.display = "flex";
+  }
+});
+
+btnApplyFilter.addEventListener("click", () => {
+  renderData(); // Render ulang data yang sudah di-fetch dengan filter baru
+});
+
+// Fungsi untuk mengonversi string tanggal dari CSV (DD/MM/YYYY) ke format ISO (YYYY-MM-DD)
+function parseCSVDateToISO(dateStr) {
+  if(!dateStr) return "";
+  let cleanStr = dateStr.split(" ")[0]; // Ambil bagian tanggal saja jika ada jam
+  if(cleanStr.includes("/")) {
+    let parts = cleanStr.split("/");
+    if(parts.length === 3 && parts[2].length === 4) {
+      // Format lokal Indonesia biasa: DD/MM/YYYY
+      return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+    }
+  }
+  // Fallback ke sistem standar
+  let d = new Date(dateStr);
+  if(!isNaN(d.getTime())) return d.toISOString().split("T")[0];
+  return cleanStr; 
+}
+
+/* ================= LOGIKA PENGAMBILAN & PARSING DATA CSV ================= */
 function csvUrl(gid){
   return `${SHEET_BASE}?gid=${gid}&single=true&output=csv`;
 }
@@ -274,24 +418,22 @@ function parseCSV(text){
   return rows.filter(r => r.some(f => f.trim() !== ""));
 }
 
-// Cari kolom Request ID / Nomor WO dan Nama pemohon secara dinamis
 function findColumnsIndex(header){
   const woIdx = header.findIndex(h => h.toLowerCase().trim().includes("nomor wo"));
   const reqIdx = header.findIndex(h => h.toLowerCase().trim().includes("request id"));
   const nameIdx = header.findIndex(h => h.toLowerCase().trim() === "nama" || h.toLowerCase().trim().includes("nama pemohon"));
+  const dateIdx = header.findIndex(h => h.toLowerCase().trim().includes("timestamp") || h.toLowerCase().trim().includes("tanggal"));
   
   return {
     idIdx: woIdx !== -1 ? woIdx : (reqIdx !== -1 ? reqIdx : 0),
-    nameIdx: nameIdx !== -1 ? nameIdx : 1
+    nameIdx: nameIdx !== -1 ? nameIdx : 1,
+    dateIdx: dateIdx !== -1 ? dateIdx : -1
   };
 }
 
-async function loadData(){
-  // Tentukan kunci sheet yang akan diambil
+async function fetchData(){
   const sheetKey = activeCategory === "master" ? "master" : `${activeCategory}_${activeStatus}`;
   const gid = SHEETS_GID[sheetKey];
-  
-  // Format Judul Panel
   let title = activeCategory === "master" ? "Semua Data Master WO" : `Data ${activeCategory} - ${activeStatus}`;
   
   panel.innerHTML = `<div class="state">Memuat ${title}...</div>`;
@@ -304,33 +446,75 @@ async function loadData(){
 
     if (rows.length < 2){
       panel.innerHTML = `<h2>${title}</h2><div class="state error">Data kosong.</div>`;
+      currentHeaders = [];
+      currentDataRows = [];
       return;
     }
 
-    const header = rows[0];
-    const cols = findColumnsIndex(header);
+    currentHeaders = rows[0];
+    currentDataRows = rows.slice(1);
     
-    // Gabungkan ID dan Nama (Contoh: "WR-UTL-001 - Budi")
-    const dataItems = rows.slice(1)
-      .map(r => {
-         const req = (r[cols.idIdx] || "").trim();
-         const name = (r[cols.nameIdx] || "").trim();
-         if(req && name) return `<strong>${escapeHtml(req)}</strong> &mdash; ${escapeHtml(name)}`;
-         return escapeHtml(req || name);
-      })
-      .filter(n => n !== "");
-
-    panel.innerHTML = `
-      <h2>${title}</h2>
-      <div class="count">${dataItems.length} tiket ditemukan</div>
-      <ul class="data-list">
-        ${dataItems.map((n, i) => `<li><span class="num">${i+1}</span><div>${n}</div></li>`).join("")}
-      </ul>
-    `;
+    renderData(); // Tampilkan data
   } catch (err){
-    panel.innerHTML = `<h2>${title}</h2>
-      <div class="state error">Gagal memuat: ${escapeHtml(err.message)}<br><br>Pastikan GID sudah disetting.</div>`;
+    panel.innerHTML = `<h2>Data Error</h2>
+      <div class="state error">Gagal memuat: ${escapeHtml(err.message)}</div>`;
   }
+}
+
+function renderData() {
+  let title = activeCategory === "master" ? "Semua Data Master WO" : `Data ${activeCategory} - ${activeStatus}`;
+  const cols = findColumnsIndex(currentHeaders);
+  
+  // Proses Filter Data Mentah
+  const filterVal = filterType.value;
+  const d1 = date1Input.value;
+  const d2 = date2Input.value;
+  
+  let filteredItems = [];
+
+  for (let i = 0; i < currentDataRows.length; i++) {
+    const r = currentDataRows[i];
+    let include = true;
+
+    // Filter tanggal hanya jika kolom tanggal ditemukan
+    if (cols.dateIdx !== -1 && filterVal !== "all") {
+      const rowDateIso = parseCSVDateToISO(r[cols.dateIdx]);
+      if (filterVal === "single" && d1) {
+        if (rowDateIso !== d1) include = false;
+      } else if (filterVal === "range" && d1 && d2) {
+        if (rowDateIso < d1 || rowDateIso > d2) include = false;
+      }
+    }
+
+    if (include) {
+      const req = (r[cols.idIdx] || "").trim();
+      const name = (r[cols.nameIdx] || "").trim();
+      let displayStr = "";
+      if (req && name) displayStr = `<strong>${escapeHtml(req)}</strong> &mdash; ${escapeHtml(name)}`;
+      else displayStr = escapeHtml(req || name);
+      
+      // Simpan index original untuk referensi Modal
+      filteredItems.push({ originalIndex: i, html: displayStr });
+    }
+  }
+
+  if (filteredItems.length === 0){
+    panel.innerHTML = `<h2>${title}</h2><div class="state">Tidak ada tiket yang sesuai dengan filter.</div>`;
+    return;
+  }
+
+  // Render HTML List
+  panel.innerHTML = `
+    <h2>${title}</h2>
+    <div class="count">${filteredItems.length} tiket ditemukan (Klik untuk detail)</div>
+    <ul class="data-list">
+      ${filteredItems.map((item, idx) => `
+        <li onclick="showModal(${item.originalIndex})">
+          <span class="num">${idx+1}</span>
+          <div>${item.html}</div>
+        </li>`).join("")}
+    </ul>
+  `;
 }
 
 function escapeHtml(str){
@@ -339,8 +523,43 @@ function escapeHtml(str){
   return div.innerHTML;
 }
 
+/* ================= LOGIKA MODAL DETAIL ================= */
+const modalOverlay = document.getElementById("modal-overlay");
+const modalBody = document.getElementById("modal-body");
+const btnCloseModal = document.getElementById("modal-close");
+
+function showModal(originalIndex) {
+  const rowData = currentDataRows[originalIndex];
+  let html = "";
+  
+  for(let i = 0; i < currentHeaders.length; i++){
+    const headerName = currentHeaders[i] ? currentHeaders[i].trim() : `Kolom ${i+1}`;
+    const value = rowData[i] ? rowData[i].trim() : "-";
+    
+    // Jangan tampilkan kolom kosong yang tidak memiliki header
+    if(headerName !== "") {
+      html += `
+        <div class="detail-row">
+          <div class="detail-label">${escapeHtml(headerName)}</div>
+          <div class="detail-value">${escapeHtml(value)}</div>
+        </div>
+      `;
+    }
+  }
+  
+  modalBody.innerHTML = html;
+  modalOverlay.style.display = "flex";
+}
+
+btnCloseModal.addEventListener("click", () => {
+  modalOverlay.style.display = "none";
+});
+// Tutup modal jika area luar diklik
+modalOverlay.addEventListener("click", (e) => {
+  if(e.target === modalOverlay) modalOverlay.style.display = "none";
+});
+
 /* ================= LOGIKA LOGIN ================= */
-// (Kode Login dan Logout tetap dipertahankan persis sama)
 const loginScreen = document.getElementById("login-screen");
 const appContent = document.getElementById("app-content");
 const loginForm = document.getElementById("login-form");
@@ -350,7 +569,7 @@ const loginSubmit = document.getElementById("login-submit");
 if (sessionStorage.getItem("loggedIn") === "true"){
   loginScreen.style.display = "none";
   appContent.style.display = "block";
-  loadData(); // Load Master WO saat pertama masuk
+  fetchData(); // Load Master WO saat pertama masuk
 }
 
 loginForm.addEventListener("submit", async (e) => {
@@ -374,7 +593,7 @@ loginForm.addEventListener("submit", async (e) => {
       sessionStorage.setItem("loggedIn", "true");
       loginScreen.style.display = "none";
       appContent.style.display = "block";
-      loadData(); // Load Master WO saat login berhasil
+      fetchData(); // Load Master WO saat login berhasil
     } else {
       loginMsg.textContent = result.message || "ID atau password salah.";
     }
