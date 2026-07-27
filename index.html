@@ -18,7 +18,9 @@
     --rejected: #e53e3e;
   }
   
-  * { box-sizing: border-box; }
+  * { 
+    box-sizing: border-box; 
+  }
   
   body {
     margin: 0;
@@ -46,13 +48,13 @@
     gap: 16px;
     z-index: 100;
   }
-.global-logos img {
+
+  .global-logos img {
     height: 170px; 
     object-fit: contain;
     background: transparent; 
     padding: 0; 
     border-radius: 0; 
-    
     /* Menggunakan drop-shadow berlapis untuk membuat efek cahaya putih di belakang teks hitam */
     filter: drop-shadow(0px 0px 4px rgba(255, 255, 255, 0.9)) 
             drop-shadow(0px 0px 15px rgba(255, 255, 255, 0.5));
@@ -62,6 +64,7 @@
     padding: 64px 24px 24px;
     text-align: center;
   }
+
   header h1 {
     font-size: clamp(28px, 4vw, 44px);
     margin: 0;
@@ -69,18 +72,20 @@
     letter-spacing: 1px;
     text-shadow: 0 2px 10px rgba(0,0,0,0.5);
   }
+
   header p {
     color: var(--text-muted);
     margin-top: 10px;
     font-weight: 300;
   }
+  
   main {
     max-width: 900px;
     margin: 0 auto;
     padding: 0 24px 64px;
   }
   
-  /* Desain Panel Glassmorphism (Kotak-kotak transparan) */
+  /* Desain Panel Glassmorphism */
   .glass-panel {
     background: var(--glass-bg);
     backdrop-filter: blur(16px);
@@ -97,8 +102,11 @@
     gap: 16px;
     margin-bottom: 24px;
   }
+
   @media (max-width: 768px) {
-    .main-menu { grid-template-columns: 1fr 1fr; }
+    .main-menu { 
+      grid-template-columns: 1fr 1fr; 
+    }
     .global-logos {
       position: static;
       justify-content: center;
@@ -106,6 +114,7 @@
       margin-bottom: -30px;
     }
   }
+
   .btn-main {
     padding: 16px 10px;
     font-size: 15px;
@@ -115,6 +124,7 @@
     font-family: inherit;
     color: var(--text-muted);
   }
+
   .btn-main.active {
     color: #fff;
     border-color: var(--accent-blue);
@@ -122,6 +132,7 @@
     box-shadow: 0 0 20px rgba(49, 130, 206, 0.4);
     transform: translateY(-2px);
   }
+
   .btn-main:hover:not(.active) { 
     background: rgba(255, 255, 255, 0.1); 
     color: #fff;
@@ -134,6 +145,7 @@
     margin-bottom: 24px;
     justify-content: center;
   }
+
   .btn-sub {
     padding: 8px 20px;
     border: 1px solid var(--glass-border);
@@ -145,6 +157,7 @@
     color: var(--text-muted);
     transition: all 0.3s ease;
   }
+
   .btn-sub.active {
     background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
     color: #fff;
@@ -161,6 +174,7 @@
     padding: 16px 20px;
     flex-wrap: wrap;
   }
+
   .filter-bar select, .filter-bar input {
     padding: 10px 14px;
     border: 1px solid var(--glass-border);
@@ -171,12 +185,18 @@
     color: #fff;
     transition: all 0.2s;
   }
-  .filter-bar select option { background: #1a202c; color: #fff; }
+
+  .filter-bar select option { 
+    background: #1a202c; 
+    color: #fff; 
+  }
+
   .filter-bar select:focus, .filter-bar input:focus {
     outline: none;
     border-color: var(--accent-orange);
     box-shadow: 0 0 10px rgba(221, 107, 32, 0.4);
   }
+
   .filter-bar button {
     padding: 10px 16px;
     background: var(--accent-orange);
@@ -188,6 +208,7 @@
     font-family: inherit;
     transition: all 0.2s;
   }
+
   .filter-bar button:hover { 
     background: #c05621;
     box-shadow: 0 0 15px rgba(221, 107, 32, 0.6);
@@ -198,113 +219,327 @@
     padding: 30px;
     min-height: 200px;
   }
-  .panel h2 { margin: 0 0 6px; font-size: 22px; text-transform: capitalize; font-weight: 600; }
-  .panel .count { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+
+  .panel h2 { 
+    margin: 0 0 6px; 
+    font-size: 22px; 
+    text-transform: capitalize; 
+    font-weight: 600; 
+  }
+
+  .panel .count { 
+    font-size: 13px; 
+    color: var(--text-muted); 
+    margin-bottom: 24px; 
+  }
   
   ul.data-list {
-    list-style: none; margin: 0; padding: 0; display: grid; gap: 12px;
+    list-style: none; 
+    margin: 0; 
+    padding: 0; 
+    display: grid; 
+    gap: 12px;
   }
+
   ul.data-list li {
-    display: flex; align-items: center; gap: 16px;
-    padding: 16px; border: 1px solid var(--glass-border);
-    border-radius: 12px; background: rgba(0, 0, 0, 0.2);
-    font-size: 14px; cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    gap: 16px;
+    padding: 16px; 
+    border: 1px solid var(--glass-border);
+    border-radius: 12px; 
+    background: rgba(0, 0, 0, 0.2);
+    font-size: 14px; 
+    cursor: pointer; 
     transition: all 0.2s ease;
   }
+
   ul.data-list li:hover {
     transform: translateX(6px);
     background: rgba(255, 255, 255, 0.08);
     border-color: var(--accent-blue);
     box-shadow: 0 4px 15px rgba(49, 130, 206, 0.2);
   }
+
   ul.data-list li .num {
-    width: 32px; height: 32px; border-radius: 50%;
+    width: 32px; 
+    height: 32px; 
+    border-radius: 50%;
     background: linear-gradient(135deg, var(--accent-orange), #c05621);
-    color: #fff; font-size: 13px; font-weight: 600;
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    color: #fff; 
+    font-size: 13px; 
+    font-weight: 600;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    flex-shrink: 0;
     box-shadow: 0 2px 8px rgba(0,0,0,0.4);
   }
   
-  .placeholder, .state { color: var(--text-muted); font-size: 14px; padding: 20px 0; text-align: center; }
-  .state.error { color: #fc8181; }
+  .placeholder, .state { 
+    color: var(--text-muted); 
+    font-size: 14px; 
+    padding: 20px 0; 
+    text-align: center; 
+  }
+
+  .state.error { 
+    color: #fc8181; 
+  }
 
   /* Modal Detail */
   .modal-overlay {
     display: none;
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
     background: rgba(0,0,0,0.7);
     backdrop-filter: blur(5px);
     z-index: 1000;
-    align-items: center; justify-content: center;
+    align-items: center; 
+    justify-content: center;
     padding: 20px;
   }
+
   .modal-content {
-    width: 100%; max-width: 600px;
+    width: 100%; 
+    max-width: 600px;
     max-height: 85vh;
-    display: flex; flex-direction: column;
+    display: flex; 
+    flex-direction: column;
+    position: relative;
   }
+
   .modal-header {
-    padding: 24px; border-bottom: 1px solid var(--glass-border);
-    display: flex; justify-content: space-between; align-items: center;
+    padding: 24px; 
+    border-bottom: 1px solid var(--glass-border);
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
     background: rgba(0,0,0,0.2);
     border-radius: 16px 16px 0 0;
   }
-  .modal-header h3 { margin: 0; font-size: 18px; font-weight: 600; }
+
+  .modal-header h3 { 
+    margin: 0; 
+    font-size: 18px; 
+    font-weight: 600; 
+  }
+
   .close-btn {
-    background: none; border: none; font-size: 28px; cursor: pointer; color: var(--text-muted);
+    background: none; 
+    border: none; 
+    font-size: 28px; 
+    cursor: pointer; 
+    color: var(--text-muted);
     transition: color 0.2s;
   }
-  .close-btn:hover { color: #fff; }
+
+  .close-btn:hover { 
+    color: #fff; 
+  }
+
   .modal-body {
-    padding: 24px; overflow-y: auto;
+    padding: 24px; 
+    overflow-y: auto;
     border-radius: 0 0 16px 16px;
   }
-  .detail-row {
-    display: flex; flex-direction: column; gap: 6px;
-    margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.08);
+  
+  /* Tampilan Badge Akses Role */
+  .role-badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.1);
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
   }
-  .detail-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-  .detail-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
-  .detail-value { font-size: 15px; color: #fff; white-space: pre-wrap; font-weight: 300; }
+  
+  /* Tombol Aksi (Khusus Engineering) */
+  .action-footer {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px dashed rgba(255,255,255,0.2);
+    display: flex;
+    gap: 12px;
+  }
 
-  /* Login & Logout */
-  #login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
-  .login-box { 
-    width: 100%; max-width: 380px; 
-    padding: 40px 32px; text-align: center; 
+  .btn-action {
+    flex: 1;
+    padding: 12px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    color: #fff;
+    transition: opacity 0.2s;
   }
-  .login-box h1 { margin: 0 0 8px; font-size: 28px; font-weight: 700; }
-  #login-form { display: flex; flex-direction: column; gap: 8px; text-align: left; margin-top: 28px;}
-  #login-form label { font-size: 13px; color: var(--text-muted); margin-top: 8px; font-weight: 600; }
-  #login-form input { 
-    padding: 12px 16px; border: 1px solid var(--glass-border); 
-    border-radius: 8px; font-size: 14px; font-family: inherit;
-    background: rgba(0,0,0,0.3); color: #fff;
+
+  .btn-action:hover { 
+    opacity: 0.8; 
   }
+
+  .btn-approve { 
+    background: var(--accent-green); 
+  }
+
+  .btn-reject { 
+    background: var(--rejected); 
+  }
+
+  .btn-action:disabled { 
+    opacity: 0.5; 
+    cursor: not-allowed; 
+  }
+
+  .detail-row {
+    display: flex; 
+    flex-direction: column; 
+    gap: 6px;
+    margin-bottom: 16px; 
+    padding-bottom: 16px; 
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .detail-row:last-child { 
+    border-bottom: none; 
+    margin-bottom: 0; 
+    padding-bottom: 0; 
+  }
+
+  .detail-label { 
+    font-size: 11px; 
+    font-weight: 600; 
+    color: var(--text-muted); 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+  }
+
+  .detail-value { 
+    font-size: 15px; 
+    color: #fff; 
+    white-space: pre-wrap; 
+    font-weight: 300; 
+  }
+
+  /* Layar Login */
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .login-box {
+    width: 100%;
+    max-width: 380px;
+    padding: 40px 32px;
+    text-align: center;
+  }
+
+  .login-box h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  #login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+    margin-top: 28px;
+  }
+
+  #login-form label {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 8px;
+    font-weight: 600;
+  }
+
+  #login-form input {
+    padding: 12px 16px;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    background: rgba(0,0,0,0.3);
+    color: #fff;
+  }
+
   #login-form input:focus {
-    outline: none; border-color: var(--accent-blue);
+    outline: none;
+    border-color: var(--accent-blue);
     box-shadow: 0 0 12px rgba(49, 130, 206, 0.4);
   }
-  #login-submit { 
-    margin-top: 24px; padding: 14px; border: none; border-radius: 8px; 
-    background: linear-gradient(135deg, var(--accent-blue), #2b6cb0); 
-    color: #fff; cursor: pointer; font-weight: 600; font-family: inherit;
-    font-size: 15px; transition: all 0.2s;
+
+  #login-submit {
+    margin-top: 24px;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent-blue), #2b6cb0);
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: inherit;
+    font-size: 15px;
+    transition: all 0.2s;
   }
-  #login-submit:hover { box-shadow: 0 0 15px rgba(49, 130, 206, 0.6); transform: translateY(-1px); }
-  .logout-btn { 
-    margin-top: 20px; padding: 10px 24px; border: 1px solid var(--glass-border); 
-    border-radius: 8px; background: rgba(0,0,0,0.3); font-size: 13px; 
-    cursor: pointer; color: #fff; font-family: inherit; transition: all 0.2s;
+
+  #login-submit:hover {
+    box-shadow: 0 0 15px rgba(49, 130, 206, 0.6);
+    transform: translateY(-1px);
   }
-  .logout-btn:hover { background: rgba(229, 62, 62, 0.8); border-color: transparent; }
-  .login-msg { color: #fc8181; font-size: 13px; margin-top: 12px; text-align: center; }
+
+  .logout-btn {
+    margin-top: 20px;
+    padding: 10px 24px;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    background: rgba(0,0,0,0.3);
+    font-size: 13px;
+    cursor: pointer;
+    color: #fff;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+
+  .logout-btn:hover {
+    background: rgba(229, 62, 62, 0.8);
+    border-color: transparent;
+  }
+
+  .login-msg {
+    color: #fc8181;
+    font-size: 13px;
+    margin-top: 12px;
+    text-align: center;
+  }
 
   /* Custom Scrollbar untuk Modal */
-  ::-webkit-scrollbar { width: 8px; }
-  ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 4px; }
-  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+  ::-webkit-scrollbar { 
+    width: 8px; 
+  }
+  ::-webkit-scrollbar-track { 
+    background: rgba(0,0,0,0.1); 
+    border-radius: 4px; 
+  }
+  ::-webkit-scrollbar-thumb { 
+    background: rgba(255,255,255,0.2); 
+    border-radius: 4px; 
+  }
+  ::-webkit-scrollbar-thumb:hover { 
+    background: rgba(255,255,255,0.4); 
+  }
 </style>
 </head>
 <body>
@@ -314,6 +549,7 @@
   <img src="logo inl (3).png" alt="Logo INL">
 </div>
 
+<!-- Layar Login -->
 <div id="login-screen">
   <div class="login-box glass-panel">
     <h1>Aplikasi WO</h1>
@@ -329,10 +565,15 @@
   </div>
 </div>
 
+<!-- Konten Utama Dashboard -->
 <div id="app-content" style="display:none;">
   <header>
     <h1>Dashboard Master WO</h1>
     <p>Pantau keseluruhan tiket Work Order secara realtime.</p>
+    
+    <!-- Menampilkan Role Pengguna Aktif di Bawah Judul -->
+    <div id="user-role-badge" class="role-badge"></div><br>
+    
     <button id="logout-btn" class="logout-btn">Keluar Dashboard</button>
   </header>
 
@@ -387,15 +628,19 @@
       <button class="close-btn" id="modal-close">&times;</button>
     </div>
     <div class="modal-body" id="modal-body">
-      <!-- Detail dirender disini via JS -->
+      <!-- Detail tabel akan di-render menggunakan JavaScript disini -->
     </div>
   </div>
 </div>
 
 <script>
-// --- KONFIGURASI URL & GID ---
+// ============================================================================
+// KONFIGURASI URL & GID
+// ============================================================================
 const SHEET_BASE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS7E84yJuZInmkqB0NJMMPpPAaGHvd9sIZHwZvzR4tROm9k9I2k6gqCd0ksKiVA4l08jJxVRF5uP-Rm/pub"; 
-const LOGIN_API_URL = "https://script.google.com/macros/s/AKfycbxOP0sQxk76FuMh3rKZWtPBi6w6eMQeRi19WrPs9XtlD9SeuCwS3h1Bzwx5_0xH_98O/exec";
+
+// PERHATIAN: Masukkan link hasil DEPLOY APPS SCRIPT YANG BARU (Langkah 2) ke sini
+const LOGIN_API_URL = "https://script.google.com/macros/s/AKfycbzy-huWhJSjnOkQjNPh_PngBS_9wwwzCNb7bpHck4tW7UH46QjemFThvtE0zJqwlqeZ/exec";
 
 const SHEETS_GID = {
   master: "172504616",
@@ -410,13 +655,19 @@ const SHEETS_GID = {
   modification_rejected: "309859811"
 };
 
-/* ================= LOGIKA UI & NAVIGASI ================= */
+// ============================================================================
+// VARIABEL GLOBAL PENYIMPANAN STATE APLIKASI
+// ============================================================================
 let activeCategory = "master"; 
 let activeStatus = "pending"; 
 
 let currentHeaders = [];
 let currentDataRows = [];
+let targetRequestId = ""; // Menyimpan ID spesifik saat modal terbuka untuk fungsi action
 
+// ============================================================================
+// LOGIKA NAVIGASI (MENU UTAMA & SUB MENU)
+// ============================================================================
 const mainBtns = document.querySelectorAll(".btn-main");
 const subBtns = document.querySelectorAll(".btn-sub");
 const subMenuContainer = document.getElementById("sub-menu-container");
@@ -425,14 +676,19 @@ const panel = document.getElementById("panel");
 mainBtns.forEach(btn => {
   btn.addEventListener("click", () => {
     activeCategory = btn.getAttribute("data-category");
+    
+    // Ubah status tombol aktif
     mainBtns.forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
 
-    if(activeCategory === "master"){
+    // Sembunyikan sub-menu jika berada di Master WO
+    if (activeCategory === "master") {
       subMenuContainer.style.display = "none";
     } else {
       subMenuContainer.style.display = "flex";
     }
+    
+    // Panggil fungsi ambil data baru
     fetchData();
   });
 });
@@ -440,13 +696,18 @@ mainBtns.forEach(btn => {
 subBtns.forEach(btn => {
   btn.addEventListener("click", () => {
     activeStatus = btn.getAttribute("data-status");
+    
+    // Ubah status sub-tombol aktif
     subBtns.forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
+    
     fetchData();
   });
 });
 
-/* ================= LOGIKA FILTER WAKTU ================= */
+// ============================================================================
+// LOGIKA FILTER WAKTU
+// ============================================================================
 const filterType = document.getElementById("filter-type");
 const date1Cont = document.getElementById("filter-date-1-container");
 const date2Cont = document.getElementById("filter-date-2-container");
@@ -456,64 +717,84 @@ const btnApplyFilter = document.getElementById("btn-apply-filter");
 
 filterType.addEventListener("change", () => {
   const val = filterType.value;
-  if(val === "all") {
+  if (val === "all") {
     date1Cont.style.display = "none";
     date2Cont.style.display = "none";
-  } else if(val === "single") {
+  } else if (val === "single") {
     date1Cont.style.display = "flex";
     date2Cont.style.display = "none";
-  } else if(val === "range") {
+  } else if (val === "range") {
     date1Cont.style.display = "flex";
     date2Cont.style.display = "flex";
   }
 });
 
-btnApplyFilter.addEventListener("click", () => {
+btnApplyFilter.addEventListener("click", () => { 
   renderData(); 
 });
 
 function parseCSVDateToISO(dateStr) {
-  if(!dateStr) return "";
+  if (!dateStr) return "";
   let cleanStr = dateStr.split(" ")[0]; 
-  if(cleanStr.includes("/")) {
+  if (cleanStr.includes("/")) {
     let parts = cleanStr.split("/");
-    if(parts.length === 3 && parts[2].length === 4) {
+    if (parts.length === 3 && parts[2].length === 4) {
       return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
     }
   }
   let d = new Date(dateStr);
-  if(!isNaN(d.getTime())) return d.toISOString().split("T")[0];
+  if (!isNaN(d.getTime())) return d.toISOString().split("T")[0];
   return cleanStr; 
 }
 
-/* ================= LOGIKA PENGAMBILAN & PARSING DATA CSV ================= */
+// ============================================================================
+// LOGIKA PENGAMBILAN & PARSING DATA CSV
+// ============================================================================
 function csvUrl(gid){
   return `${SHEET_BASE}?gid=${gid}&single=true&output=csv`;
 }
 
-function parseCSV(text){
+function parseCSV(text) {
   const rows = [];
   let row = [], field = "", inQuotes = false;
-  for (let i = 0; i < text.length; i++){
+  for (let i = 0; i < text.length; i++) {
     const c = text[i];
-    if (inQuotes){
-      if (c === '"'){
-        if (text[i+1] === '"'){ field += '"'; i++; }
-        else inQuotes = false;
-      } else field += c;
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i+1] === '"') { 
+          field += '"'; i++; 
+        } else {
+          inQuotes = false;
+        }
+      } else {
+        field += c;
+      }
     } else {
-      if (c === '"') inQuotes = true;
-      else if (c === ','){ row.push(field); field = ""; }
-      else if (c === '\n'){ row.push(field); rows.push(row); row = []; field = ""; }
-      else if (c === '\r'){ }
-      else field += c;
+      if (c === '"') {
+        inQuotes = true;
+      } else if (c === ',') {
+        row.push(field); 
+        field = ""; 
+      } else if (c === '\n') {
+        row.push(field); 
+        rows.push(row); 
+        row = []; 
+        field = ""; 
+      } else if (c === '\r') {
+        // Abaikan return character
+      } else {
+        field += c;
+      }
     }
   }
-  if (field.length || row.length){ row.push(field); rows.push(row); }
+  if (field.length || row.length) { 
+    row.push(field); 
+    rows.push(row); 
+  }
   return rows.filter(r => r.some(f => f.trim() !== ""));
 }
 
-function findColumnsIndex(header){
+function findColumnsIndex(header) {
   const woIdx = header.findIndex(h => h.toLowerCase().trim().includes("nomor wo"));
   const reqIdx = header.findIndex(h => h.toLowerCase().trim().includes("request id"));
   const nameIdx = header.findIndex(h => h.toLowerCase().trim() === "nama" || h.toLowerCase().trim().includes("nama pemohon"));
@@ -526,7 +807,7 @@ function findColumnsIndex(header){
   };
 }
 
-async function fetchData(){
+async function fetchData() {
   const sheetKey = activeCategory === "master" ? "master" : `${activeCategory}_${activeStatus}`;
   const gid = SHEETS_GID[sheetKey];
   let title = activeCategory === "master" ? "Semua Data Master WO" : `Data ${activeCategory} - ${activeStatus}`;
@@ -539,7 +820,7 @@ async function fetchData(){
     const text = await res.text();
     const rows = parseCSV(text);
 
-    if (rows.length < 2){
+    if (rows.length < 2) {
       panel.innerHTML = `<h2>${title}</h2><div class="state error">Data kosong.</div>`;
       currentHeaders = [];
       currentDataRows = [];
@@ -550,9 +831,8 @@ async function fetchData(){
     currentDataRows = rows.slice(1);
     
     renderData(); 
-  } catch (err){
-    panel.innerHTML = `<h2>Data Error</h2>
-      <div class="state error">Gagal memuat: ${escapeHtml(err.message)}</div>`;
+  } catch (err) {
+    panel.innerHTML = `<h2>Data Error</h2><div class="state error">Gagal memuat: ${escapeHtml(err.message)}</div>`;
   }
 }
 
@@ -570,6 +850,7 @@ function renderData() {
     const r = currentDataRows[i];
     let include = true;
 
+    // Cek Filter Waktu
     if (cols.dateIdx !== -1 && filterVal !== "all") {
       const rowDateIso = parseCSVDateToISO(r[cols.dateIdx]);
       if (filterVal === "single" && d1) {
@@ -583,24 +864,29 @@ function renderData() {
       const req = (r[cols.idIdx] || "").trim();
       const name = (r[cols.nameIdx] || "").trim();
       let displayStr = "";
-      if (req && name) displayStr = `<strong>${escapeHtml(req)}</strong> &mdash; ${escapeHtml(name)}`;
-      else displayStr = escapeHtml(req || name);
       
-      filteredItems.push({ originalIndex: i, html: displayStr });
+      if (req && name) {
+        displayStr = `<strong>${escapeHtml(req)}</strong> &mdash; ${escapeHtml(name)}`;
+      } else {
+        displayStr = escapeHtml(req || name);
+      }
+      
+      filteredItems.push({ originalIndex: i, html: displayStr, reqId: req });
     }
   }
 
-  if (filteredItems.length === 0){
+  if (filteredItems.length === 0) {
     panel.innerHTML = `<h2>${title}</h2><div class="state">Tidak ada tiket yang sesuai dengan filter.</div>`;
     return;
   }
 
+  // Render HTML untuk Daftar Tiket
   panel.innerHTML = `
     <h2>${title}</h2>
-    <div class="count">${filteredItems.length} tiket ditemukan (Klik baris untuk melihat detail)</div>
+    <div class="count">${filteredItems.length} tiket ditemukan</div>
     <ul class="data-list">
       ${filteredItems.map((item, idx) => `
-        <li onclick="showModal(${item.originalIndex})">
+        <li onclick="showModal(${item.originalIndex}, '${item.reqId}')">
           <span class="num">${idx+1}</span>
           <div>${item.html}</div>
         </li>`).join("")}
@@ -614,20 +900,24 @@ function escapeHtml(str){
   return div.innerHTML;
 }
 
-/* ================= LOGIKA MODAL DETAIL ================= */
+// ============================================================================
+// LOGIKA MODAL & ACTION (APPROVE / REJECT UNTUK ENGINEERING)
+// ============================================================================
 const modalOverlay = document.getElementById("modal-overlay");
 const modalBody = document.getElementById("modal-body");
 const btnCloseModal = document.getElementById("modal-close");
 
-function showModal(originalIndex) {
+function showModal(originalIndex, reqId) {
   const rowData = currentDataRows[originalIndex];
+  targetRequestId = reqId; // Simpan ID ini untuk digunakan oleh tombol aksi (approve/reject)
   let html = "";
   
-  for(let i = 0; i < currentHeaders.length; i++){
+  // Render Baris Detail
+  for (let i = 0; i < currentHeaders.length; i++) {
     const headerName = currentHeaders[i] ? currentHeaders[i].trim() : `Kolom ${i+1}`;
     const value = rowData[i] ? rowData[i].trim() : "-";
     
-    if(headerName !== "") {
+    if (headerName !== "") {
       html += `
         <div class="detail-row">
           <div class="detail-label">${escapeHtml(headerName)}</div>
@@ -636,28 +926,105 @@ function showModal(originalIndex) {
       `;
     }
   }
+
+  // Cek Role Pengguna Saat Ini
+  const userRole = sessionStorage.getItem("userRole");
+  
+  // Tampilkan Tombol Approve/Reject HANYA JIKA:
+  // 1. Role adalah engineering
+  // 2. Status menu yang terbuka adalah "pending"
+  // 3. Bukan di tab "Master WO"
+  if (userRole === "engineering" && activeStatus === "pending" && activeCategory !== "master") {
+    html += `
+      <div class="action-footer" id="action-footer">
+        <button class="btn-action btn-approve" onclick="executeAction('approved')">Terima (Approve)</button>
+        <button class="btn-action btn-reject" onclick="executeAction('rejected')">Tolak (Reject)</button>
+      </div>
+      <div id="action-msg" style="text-align:center; margin-top:10px; font-size:12px; color:var(--text-muted);"></div>
+    `;
+  }
   
   modalBody.innerHTML = html;
   modalOverlay.style.display = "flex";
 }
 
-btnCloseModal.addEventListener("click", () => {
-  modalOverlay.style.display = "none";
-});
-modalOverlay.addEventListener("click", (e) => {
-  if(e.target === modalOverlay) modalOverlay.style.display = "none";
+// Fungsi untuk mengirim aksi ke Apps Script API
+async function executeAction(actionType) {
+  if (!confirm(`Anda yakin ingin melakukan ${actionType} pada tiket ini?`)) {
+    return;
+  }
+
+  const btnFooter = document.getElementById("action-footer");
+  const msgBox = document.getElementById("action-msg");
+  
+  // Matikan tombol agar tidak bisa diklik berulang kali
+  const buttons = btnFooter.querySelectorAll("button");
+  buttons.forEach(b => b.disabled = true);
+  
+  msgBox.innerHTML = "Memproses data ke server, mohon tunggu...";
+  msgBox.style.color = "var(--text-muted)";
+
+  try {
+    const res = await fetch(LOGIN_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ 
+        type: "action", 
+        action: actionType, 
+        category: activeCategory, 
+        requestId: targetRequestId 
+      })
+    });
+    
+    const result = await res.json();
+
+    if (result.success) {
+      msgBox.innerHTML = "Berhasil! Data telah diperbarui.";
+      msgBox.style.color = "var(--accent-green)";
+      
+      // Tutup modal secara otomatis dan refresh data
+      setTimeout(() => {
+        modalOverlay.style.display = "none";
+        fetchData(); 
+      }, 1500);
+      
+    } else {
+      msgBox.innerHTML = "Gagal: " + result.message;
+      msgBox.style.color = "var(--rejected)";
+      buttons.forEach(b => b.disabled = false); 
+    }
+  } catch (err) {
+    msgBox.innerHTML = "Gagal menghubungi server.";
+    msgBox.style.color = "var(--rejected)";
+    buttons.forEach(b => b.disabled = false);
+  }
+}
+
+btnCloseModal.addEventListener("click", () => { 
+  modalOverlay.style.display = "none"; 
 });
 
-/* ================= LOGIKA LOGIN ================= */
+modalOverlay.addEventListener("click", (e) => { 
+  if(e.target === modalOverlay) {
+    modalOverlay.style.display = "none"; 
+  }
+});
+
+// ============================================================================
+// LOGIKA SISTEM LOGIN & AUTHENTIKASI
+// ============================================================================
 const loginScreen = document.getElementById("login-screen");
 const appContent = document.getElementById("app-content");
 const loginForm = document.getElementById("login-form");
 const loginMsg = document.getElementById("login-msg");
 const loginSubmit = document.getElementById("login-submit");
+const roleBadge = document.getElementById("user-role-badge");
 
-if (sessionStorage.getItem("loggedIn") === "true"){
+// Pengecekan sesi aktif saat halaman dimuat
+if (sessionStorage.getItem("loggedIn") === "true") {
   loginScreen.style.display = "none";
   appContent.style.display = "block";
+  roleBadge.textContent = "Akses: " + (sessionStorage.getItem("userRole") || "USER").toUpperCase();
   fetchData(); 
 }
 
@@ -674,19 +1041,28 @@ loginForm.addEventListener("submit", async (e) => {
     const res = await fetch(LOGIN_API_URL, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify({ 
+        type: "login", // Info tipe request untuk backend yang baru
+        username, 
+        password 
+      })
     });
+    
     const result = await res.json();
 
-    if (result.success){
+    if (result.success) {
+      // Simpan status login dan role ke sistem peramban
       sessionStorage.setItem("loggedIn", "true");
+      sessionStorage.setItem("userRole", result.role || "user");
+      
       loginScreen.style.display = "none";
       appContent.style.display = "block";
+      roleBadge.textContent = "Akses: " + (result.role || "user").toUpperCase();
       fetchData(); 
     } else {
       loginMsg.textContent = result.message || "ID atau password salah.";
     }
-  } catch (err){
+  } catch (err) {
     loginMsg.textContent = "Gagal menghubungi server login.";
   } finally {
     loginSubmit.disabled = false;
@@ -696,6 +1072,7 @@ loginForm.addEventListener("submit", async (e) => {
 
 document.getElementById("logout-btn").addEventListener("click", () => {
   sessionStorage.removeItem("loggedIn");
+  sessionStorage.removeItem("userRole");
   loginForm.reset();
   appContent.style.display = "none";
   loginScreen.style.display = "flex";
