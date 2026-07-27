@@ -46,13 +46,16 @@
     gap: 16px;
     z-index: 100;
   }
-  .global-logos img {
-    height: 48px;
+.global-logos img {
+    height: 85px; /* Angka diperbesar. Silakan ubah jika masih kurang besar/terlalu besar */
     object-fit: contain;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 4px 8px;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    background: transparent; /* Menghilangkan warna background putih dari CSS */
+    padding: 0; /* Menghapus jarak sisi */
+    box-shadow: none; /* Menghapus efek kotak bayangan */
+    border-radius: 0; 
+    
+    /* Tambahan efek bayangan yang mengikuti lekuk bentuk logo agar tidak tenggelam di background gelap */
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.6)); 
   }
 
   header {
