@@ -27,7 +27,6 @@
     font-family: 'Poppins', sans-serif;
     color: var(--text-main);
     min-height: 100vh;
-    /* Animasi Gradasi Sinematik */
     background: linear-gradient(-45deg, #0b192c, #1a365d, #5c3a21, #0f3a24);
     background-size: 400% 400%;
     animation: gradientBG 15s ease infinite;
@@ -39,7 +38,6 @@
     100% { background-position: 0% 50%; }
   }
 
-  /* Logo Global di Pojok Kanan Atas */
   .global-logos {
     position: absolute;
     top: 24px;
@@ -55,7 +53,6 @@
     background: transparent; 
     padding: 0; 
     border-radius: 0; 
-    /* Menggunakan drop-shadow berlapis untuk membuat efek cahaya putih di belakang teks hitam */
     filter: drop-shadow(0px 0px 4px rgba(255, 255, 255, 0.9)) 
             drop-shadow(0px 0px 15px rgba(255, 255, 255, 0.5));
   }
@@ -85,7 +82,6 @@
     padding: 0 24px 64px;
   }
   
-  /* Desain Panel Glassmorphism */
   .glass-panel {
     background: var(--glass-bg);
     backdrop-filter: blur(16px);
@@ -95,7 +91,6 @@
     box-shadow: var(--glass-shadow);
   }
 
-  /* Menu Utama */
   .main-menu {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -138,13 +133,12 @@
     color: #fff;
   }
 
-  /* Sub Menu */
   .sub-menu {
     display: flex;
     gap: 12px;
     margin-bottom: 24px;
     justify-content: center;
-    flex-wrap: wrap; /* Agar rapi jika tombol banyak */
+    flex-wrap: wrap; 
   }
 
   .btn-sub {
@@ -166,7 +160,6 @@
     box-shadow: 0 4px 15px rgba(56, 161, 105, 0.4);
   }
 
-  /* Filter Bar */
   .filter-bar {
     display: flex;
     gap: 12px;
@@ -215,7 +208,6 @@
     box-shadow: 0 0 15px rgba(221, 107, 32, 0.6);
   }
 
-  /* Panel Data */
   .panel {
     padding: 30px;
     min-height: 200px;
@@ -277,6 +269,20 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.4);
   }
   
+  .list-text { flex-grow: 1; }
+  
+  /* Desain Badge Identitas untuk Master WO */
+  .id-badges { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+  .badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; border: 1px solid transparent; }
+  
+  .badge.cat-mechanical { background: rgba(221, 107, 32, 0.2); border-color: var(--accent-orange); color: #fbd38d; }
+  .badge.cat-electrical { background: rgba(49, 130, 206, 0.2); border-color: var(--accent-blue); color: #90cdf4; }
+  .badge.cat-modification { background: rgba(128, 90, 213, 0.2); border-color: #805ad5; color: #d6bcfa; }
+  
+  .badge.stat-approved { background: rgba(56, 161, 105, 0.2); border-color: var(--accent-green); color: #9ae6b4; }
+  .badge.stat-pending_finished { background: rgba(214, 158, 46, 0.2); border-color: #d69e2e; color: #fefcbf; }
+  .badge.stat-finished { background: rgba(49, 151, 149, 0.2); border-color: #319795; color: #81e6d9; }
+
   .placeholder, .state { 
     color: var(--text-muted); 
     font-size: 14px; 
@@ -348,7 +354,6 @@
     border-radius: 0 0 16px 16px;
   }
   
-  /* Tampilan Badge Akses Role */
   .role-badge {
     display: inline-block;
     font-size: 11px;
@@ -360,7 +365,6 @@
     text-transform: uppercase;
   }
   
-  /* Tombol Aksi (Khusus Engineering) */
   .action-footer {
     margin-top: 24px;
     padding-top: 16px;
@@ -386,18 +390,9 @@
     opacity: 0.8; 
   }
 
-  .btn-approve { 
-    background: var(--accent-green); 
-  }
-
-  .btn-reject { 
-    background: var(--rejected); 
-  }
-
-  .btn-action:disabled { 
-    opacity: 0.5; 
-    cursor: not-allowed; 
-  }
+  .btn-approve { background: var(--accent-green); }
+  .btn-reject { background: var(--rejected); }
+  .btn-action:disabled { opacity: 0.5; cursor: not-allowed; }
 
   .detail-row {
     display: flex; 
@@ -408,26 +403,9 @@
     border-bottom: 1px solid rgba(255,255,255,0.08);
   }
 
-  .detail-row:last-child { 
-    border-bottom: none; 
-    margin-bottom: 0; 
-    padding-bottom: 0; 
-  }
-
-  .detail-label { 
-    font-size: 11px; 
-    font-weight: 600; 
-    color: var(--text-muted); 
-    text-transform: uppercase; 
-    letter-spacing: 1px; 
-  }
-
-  .detail-value { 
-    font-size: 15px; 
-    color: #fff; 
-    white-space: pre-wrap; 
-    font-weight: 300; 
-  }
+  .detail-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .detail-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+  .detail-value { font-size: 15px; color: #fff; white-space: pre-wrap; font-weight: 300; }
 
   /* Layar Login */
   #login-screen {
@@ -445,11 +423,7 @@
     text-align: center;
   }
 
-  .login-box h1 {
-    margin: 0 0 8px;
-    font-size: 28px;
-    font-weight: 700;
-  }
+  .login-box h1 { margin: 0 0 8px; font-size: 28px; font-weight: 700; }
 
   #login-form {
     display: flex;
@@ -459,13 +433,7 @@
     margin-top: 28px;
   }
 
-  #login-form label {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-top: 8px;
-    font-weight: 600;
-  }
-
+  #login-form label { font-size: 13px; color: var(--text-muted); margin-top: 8px; font-weight: 600; }
   #login-form input {
     padding: 12px 16px;
     border: 1px solid var(--glass-border);
@@ -475,12 +443,7 @@
     background: rgba(0,0,0,0.3);
     color: #fff;
   }
-
-  #login-form input:focus {
-    outline: none;
-    border-color: var(--accent-blue);
-    box-shadow: 0 0 12px rgba(49, 130, 206, 0.4);
-  }
+  #login-form input:focus { outline: none; border-color: var(--accent-blue); box-shadow: 0 0 12px rgba(49, 130, 206, 0.4); }
 
   #login-submit {
     margin-top: 24px;
@@ -495,11 +458,7 @@
     font-size: 15px;
     transition: all 0.2s;
   }
-
-  #login-submit:hover {
-    box-shadow: 0 0 15px rgba(49, 130, 206, 0.6);
-    transform: translateY(-1px);
-  }
+  #login-submit:hover { box-shadow: 0 0 15px rgba(49, 130, 206, 0.6); transform: translateY(-1px); }
 
   .logout-btn {
     margin-top: 20px;
@@ -513,34 +472,13 @@
     font-family: inherit;
     transition: all 0.2s;
   }
+  .logout-btn:hover { background: rgba(229, 62, 62, 0.8); border-color: transparent; }
+  .login-msg { color: #fc8181; font-size: 13px; margin-top: 12px; text-align: center; }
 
-  .logout-btn:hover {
-    background: rgba(229, 62, 62, 0.8);
-    border-color: transparent;
-  }
-
-  .login-msg {
-    color: #fc8181;
-    font-size: 13px;
-    margin-top: 12px;
-    text-align: center;
-  }
-
-  /* Custom Scrollbar untuk Modal */
-  ::-webkit-scrollbar { 
-    width: 8px; 
-  }
-  ::-webkit-scrollbar-track { 
-    background: rgba(0,0,0,0.1); 
-    border-radius: 4px; 
-  }
-  ::-webkit-scrollbar-thumb { 
-    background: rgba(255,255,255,0.2); 
-    border-radius: 4px; 
-  }
-  ::-webkit-scrollbar-thumb:hover { 
-    background: rgba(255,255,255,0.4); 
-  }
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
 </style>
 </head>
 <body>
@@ -572,14 +510,13 @@
     <h1>Dashboard Master WO</h1>
     <p>Pantau keseluruhan tiket Work Order secara realtime.</p>
     
-    <!-- Menampilkan Role Pengguna Aktif di Bawah Judul -->
     <div id="user-role-badge" class="role-badge"></div><br>
     
     <button id="logout-btn" class="logout-btn">Keluar Dashboard</button>
   </header>
 
   <main>
-    <!-- Menu Utama (Kategori) -->
+    <!-- Menu Utama -->
     <div class="main-menu">
       <button class="btn-main glass-panel active" data-category="master">Master WO</button>
       <button class="btn-main glass-panel" data-category="mechanical">Mechanical</button>
@@ -587,7 +524,7 @@
       <button class="btn-main glass-panel" data-category="modification">Modification</button>
     </div>
 
-    <!-- Sub Menu (Status) dengan Tambahan 2 Status Baru -->
+    <!-- Sub Menu -->
     <div class="sub-menu" id="sub-menu-container" style="display:none;">
       <button class="btn-sub active" data-status="pending">Pending Approval</button>
       <button class="btn-sub" data-status="approved">On Progress</button>
@@ -631,7 +568,7 @@
       <button class="close-btn" id="modal-close">&times;</button>
     </div>
     <div class="modal-body" id="modal-body">
-      <!-- Detail tabel akan di-render menggunakan JavaScript disini -->
+      <!-- Di-render via JS -->
     </div>
   </div>
 </div>
@@ -643,12 +580,10 @@
 const SHEET_BASE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS7E84yJuZInmkqB0NJMMPpPAaGHvd9sIZHwZvzR4tROm9k9I2k6gqCd0ksKiVA4l08jJxVRF5uP-Rm/pub"; 
 
 // PERHATIAN: Masukkan link hasil DEPLOY APPS SCRIPT YANG BARU ke sini
-const LOGIN_API_URL = "https://script.google.com/macros/s/AKfycbymvLjxYZfoQxUcIJ2qoAX5DvdXl47S__WPuNzOx8fzgv7HeXrTid_851WVceRXOWh4/exec";
+const LOGIN_API_URL = "https://script.google.com/macros/s/AKfycbz07qfLOQt2Rch3fSardYHYM5FLusXn6fhE_ObYD7XzVmbGYUQBOUHmB8qFqGCIDP1O/exec";
 
-// Tambahkan GID untuk ke-6 sheet baru di bawah ini jika sudah dibuat
+// Tambahkan GID untuk ke-6 sheet baru di bawah ini
 const SHEETS_GID = {
-  master: "172504616",
-
   // MECHANICAL
   mechanical_pending: "83528035",
   mechanical_approved: "709234165",
@@ -672,18 +607,20 @@ const SHEETS_GID = {
 };
 
 // ============================================================================
-// VARIABEL GLOBAL PENYIMPANAN STATE APLIKASI
+// STATE APLIKASI
 // ============================================================================
 let activeCategory = "master"; 
 let activeStatus = "pending"; 
 
-let currentHeaders = [];
-let currentDataRows = [];
-let targetRequestId = ""; 
+// Data untuk dirender: Array berisi objek { rowData: [], category: "", status: "", labelStatus: "" }
+let currentDataObjects = [];
+let globalHeaders = [];
 
-// ============================================================================
-// LOGIKA NAVIGASI (MENU UTAMA & SUB MENU)
-// ============================================================================
+// Variabel untuk interaksi modal
+let targetRequestId = ""; 
+let targetItemCategory = ""; 
+let targetItemStatus = "";
+
 const mainBtns = document.querySelectorAll(".btn-main");
 const subBtns = document.querySelectorAll(".btn-sub");
 const subMenuContainer = document.getElementById("sub-menu-container");
@@ -692,7 +629,6 @@ const panel = document.getElementById("panel");
 mainBtns.forEach(btn => {
   btn.addEventListener("click", () => {
     activeCategory = btn.getAttribute("data-category");
-    
     mainBtns.forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
 
@@ -701,7 +637,6 @@ mainBtns.forEach(btn => {
     } else {
       subMenuContainer.style.display = "flex";
     }
-    
     fetchData();
   });
 });
@@ -709,17 +644,12 @@ mainBtns.forEach(btn => {
 subBtns.forEach(btn => {
   btn.addEventListener("click", () => {
     activeStatus = btn.getAttribute("data-status");
-    
     subBtns.forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
-    
     fetchData();
   });
 });
 
-// ============================================================================
-// LOGIKA FILTER WAKTU
-// ============================================================================
 const filterType = document.getElementById("filter-type");
 const date1Cont = document.getElementById("filter-date-1-container");
 const date2Cont = document.getElementById("filter-date-2-container");
@@ -741,9 +671,7 @@ filterType.addEventListener("change", () => {
   }
 });
 
-btnApplyFilter.addEventListener("click", () => { 
-  renderData(); 
-});
+btnApplyFilter.addEventListener("click", () => { renderData(); });
 
 function parseCSVDateToISO(dateStr) {
   if (!dateStr) return "";
@@ -759,9 +687,6 @@ function parseCSVDateToISO(dateStr) {
   return cleanStr; 
 }
 
-// ============================================================================
-// LOGIKA PENGAMBILAN & PARSING DATA CSV
-// ============================================================================
 function csvUrl(gid){
   return `${SHEET_BASE}?gid=${gid}&single=true&output=csv`;
 }
@@ -773,36 +698,17 @@ function parseCSV(text) {
     const c = text[i];
     if (inQuotes) {
       if (c === '"') {
-        if (text[i+1] === '"') { 
-          field += '"'; i++; 
-        } else {
-          inQuotes = false;
-        }
-      } else {
-        field += c;
-      }
+        if (text[i+1] === '"') { field += '"'; i++; } else { inQuotes = false; }
+      } else { field += c; }
     } else {
-      if (c === '"') {
-        inQuotes = true;
-      } else if (c === ',') {
-        row.push(field); 
-        field = ""; 
-      } else if (c === '\n') {
-        row.push(field); 
-        rows.push(row); 
-        row = []; 
-        field = ""; 
-      } else if (c === '\r') {
-        // Abaikan return character
-      } else {
-        field += c;
-      }
+      if (c === '"') { inQuotes = true; } 
+      else if (c === ',') { row.push(field); field = ""; } 
+      else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ""; } 
+      else if (c === '\r') { } 
+      else { field += c; }
     }
   }
-  if (field.length || row.length) { 
-    row.push(field); 
-    rows.push(row); 
-  }
+  if (field.length || row.length) { row.push(field); rows.push(row); }
   return rows.filter(r => r.some(f => f.trim() !== ""));
 }
 
@@ -811,7 +717,6 @@ function findColumnsIndex(header) {
   const reqIdx = header.findIndex(h => h.toLowerCase().trim().includes("request id"));
   const nameIdx = header.findIndex(h => h.toLowerCase().trim() === "nama" || h.toLowerCase().trim().includes("nama pemohon"));
   const dateIdx = header.findIndex(h => h.toLowerCase().trim().includes("timestamp") || h.toLowerCase().trim().includes("tanggal"));
-  
   return {
     idIdx: woIdx !== -1 ? woIdx : (reqIdx !== -1 ? reqIdx : 0),
     nameIdx: nameIdx !== -1 ? nameIdx : 1,
@@ -821,78 +726,85 @@ function findColumnsIndex(header) {
 
 async function fetchData() {
   panel.innerHTML = `<div class="state">Memuat data...</div>`;
+  currentDataObjects = [];
+  globalHeaders = [];
 
   try {
-    // JIKA MASTER WO DIPILIH: GABUNGKAN 3 SHEET ON PROGRESS SECARA OTOMATIS
+    // JIKA MASTER WO: AMBIL 9 SHEET SEKALIGUS
     if (activeCategory === "master") {
-      const gids = [
-        SHEETS_GID.mechanical_approved,
-        SHEETS_GID.electrical_approved,
-        SHEETS_GID.modification_approved
+      const masterSources = [
+        { gid: SHEETS_GID.mechanical_approved, cat: "mechanical", stat: "approved", labelStat: "ON PROGRESS" },
+        { gid: SHEETS_GID.mechanical_pending_finished, cat: "mechanical", stat: "pending_finished", labelStat: "PENDING FINISHED" },
+        { gid: SHEETS_GID.mechanical_finished, cat: "mechanical", stat: "finished", labelStat: "FINISHED" },
+        { gid: SHEETS_GID.electrical_approved, cat: "electrical", stat: "approved", labelStat: "ON PROGRESS" },
+        { gid: SHEETS_GID.electrical_pending_finished, cat: "electrical", stat: "pending_finished", labelStat: "PENDING FINISHED" },
+        { gid: SHEETS_GID.electrical_finished, cat: "electrical", stat: "finished", labelStat: "FINISHED" },
+        { gid: SHEETS_GID.modification_approved, cat: "modification", stat: "approved", labelStat: "ON PROGRESS" },
+        { gid: SHEETS_GID.modification_pending_finished, cat: "modification", stat: "pending_finished", labelStat: "PENDING FINISHED" },
+        { gid: SHEETS_GID.modification_finished, cat: "modification", stat: "finished", labelStat: "FINISHED" }
       ];
       
-      let combinedRows = [];
-      let masterHeaders = [];
-      
-      // Fetching ketiga data secara bersamaan (Paralel)
-      const fetches = gids.map(gid => fetch(csvUrl(gid)));
+      const fetches = masterSources.map(src => fetch(csvUrl(src.gid)).catch(() => null));
       const responses = await Promise.all(fetches);
       
       for (let i = 0; i < responses.length; i++) {
-        if (!responses[i].ok) continue;
+        if (!responses[i] || !responses[i].ok) continue;
         const text = await responses[i].text();
         const rows = parseCSV(text);
         
         if (rows.length < 2) continue;
+        if (globalHeaders.length === 0) globalHeaders = rows[0]; 
         
-        if (masterHeaders.length === 0) {
-          masterHeaders = rows[0]; 
+        const srcInfo = masterSources[i];
+        for (let j = 1; j < rows.length; j++) {
+          currentDataObjects.push({
+            rowData: rows[j],
+            category: srcInfo.cat,
+            status: srcInfo.stat,
+            labelStat: srcInfo.labelStat
+          });
         }
-        
-        combinedRows = combinedRows.concat(rows.slice(1));
       }
-      
-      currentHeaders = masterHeaders;
-      currentDataRows = combinedRows;
 
-      if (currentDataRows.length === 0) {
-        panel.innerHTML = `<h2>Semua Data Master WO (On Progress)</h2><div class="state error">Tidak ada tiket On Progress saat ini.</div>`;
-        return;
-      }
-      
-      renderData();
-
-    // JIKA MENU BIASA DIPILIH
+    // JIKA MENU BIASA: AMBIL 1 SHEET SAJA
     } else {
       const sheetKey = `${activeCategory}_${activeStatus}`;
       const gid = SHEETS_GID[sheetKey];
-      let title = `Data ${activeCategory} - ${activeStatus}`;
       
       const res = await fetch(csvUrl(gid));
-      if (!res.ok) throw new Error("Gagal mengambil data (status " + res.status + ")");
+      if (!res.ok) throw new Error("Gagal mengambil data");
       const text = await res.text();
       const rows = parseCSV(text);
 
-      if (rows.length < 2) {
-        panel.innerHTML = `<h2>${title}</h2><div class="state error">Data kosong.</div>`;
-        currentHeaders = [];
-        currentDataRows = [];
-        return;
+      if (rows.length >= 2) {
+        globalHeaders = rows[0];
+        for (let j = 1; j < rows.length; j++) {
+          currentDataObjects.push({
+            rowData: rows[j],
+            category: activeCategory,
+            status: activeStatus,
+            labelStat: "" 
+          });
+        }
       }
-
-      currentHeaders = rows[0];
-      currentDataRows = rows.slice(1);
-      
-      renderData(); 
     }
+
+    if (currentDataObjects.length === 0) {
+      let t = activeCategory === "master" ? "Data Master WO" : `Data ${activeCategory}`;
+      panel.innerHTML = `<h2>${t}</h2><div class="state error">Data kosong atau tidak ditemukan.</div>`;
+      return;
+    }
+    
+    renderData();
+
   } catch (err) {
     panel.innerHTML = `<h2>Data Error</h2><div class="state error">Gagal memuat: ${escapeHtml(err.message)}</div>`;
   }
 }
 
 function renderData() {
-  let title = activeCategory === "master" ? "Semua Data Master WO (On Progress)" : `Data ${activeCategory} - ${activeStatus}`;
-  const cols = findColumnsIndex(currentHeaders);
+  let title = activeCategory === "master" ? "Seluruh Data Master WO" : `Data ${activeCategory} - ${activeStatus}`;
+  const cols = findColumnsIndex(globalHeaders);
   
   const filterVal = filterType.value;
   const d1 = date1Input.value;
@@ -900,11 +812,12 @@ function renderData() {
   
   let filteredItems = [];
 
-  for (let i = 0; i < currentDataRows.length; i++) {
-    const r = currentDataRows[i];
+  for (let i = 0; i < currentDataObjects.length; i++) {
+    const itemObj = currentDataObjects[i];
+    const r = itemObj.rowData;
     let include = true;
 
-    // Cek Filter Waktu
+    // Filter Waktu
     if (cols.dateIdx !== -1 && filterVal !== "all") {
       const rowDateIso = parseCSVDateToISO(r[cols.dateIdx]);
       if (filterVal === "single" && d1) {
@@ -917,15 +830,34 @@ function renderData() {
     if (include) {
       const req = (r[cols.idIdx] || "").trim();
       const name = (r[cols.nameIdx] || "").trim();
-      let displayStr = "";
       
-      if (req && name) {
-        displayStr = `<strong>${escapeHtml(req)}</strong> &mdash; ${escapeHtml(name)}`;
-      } else {
-        displayStr = escapeHtml(req || name);
+      let topStr = req && name ? `<strong>${escapeHtml(req)}</strong> &mdash; ${escapeHtml(name)}` : escapeHtml(req || name);
+      
+      // Jika di Master WO, tambahkan Badge Identitas
+      let badgeHtml = "";
+      if (activeCategory === "master") {
+        badgeHtml = `
+          <div class="id-badges">
+            <span class="badge cat-${itemObj.category}">${itemObj.category}</span>
+            <span class="badge stat-${itemObj.status}">${itemObj.labelStat}</span>
+          </div>
+        `;
       }
       
-      filteredItems.push({ originalIndex: i, html: displayStr, reqId: req });
+      let htmlStr = `
+        <div class="list-text">
+          <div>${topStr}</div>
+          ${badgeHtml}
+        </div>
+      `;
+      
+      filteredItems.push({ 
+        originalIndex: i, 
+        html: htmlStr, 
+        reqId: req,
+        itemCat: itemObj.category,
+        itemStat: itemObj.status
+      });
     }
   }
 
@@ -934,15 +866,14 @@ function renderData() {
     return;
   }
 
-  // Render HTML untuk Daftar Tiket
   panel.innerHTML = `
     <h2>${title}</h2>
     <div class="count">${filteredItems.length} tiket ditemukan</div>
     <ul class="data-list">
       ${filteredItems.map((item, idx) => `
-        <li onclick="showModal(${item.originalIndex}, '${item.reqId}')">
+        <li onclick="showModal(${item.originalIndex}, '${item.reqId}', '${item.itemCat}', '${item.itemStat}')">
           <span class="num">${idx+1}</span>
-          <div>${item.html}</div>
+          ${item.html}
         </li>`).join("")}
     </ul>
   `;
@@ -961,74 +892,62 @@ const modalOverlay = document.getElementById("modal-overlay");
 const modalBody = document.getElementById("modal-body");
 const btnCloseModal = document.getElementById("modal-close");
 
-function showModal(originalIndex, reqId) {
-  const rowData = currentDataRows[originalIndex];
-  targetRequestId = reqId; // Simpan ID ini untuk digunakan oleh tombol aksi
+function showModal(originalIndex, reqId, itemCat, itemStat) {
+  const itemObj = currentDataObjects[originalIndex];
+  const rowData = itemObj.rowData;
+  
+  // Set variabel global untuk digunakan oleh eksekutor action
+  targetRequestId = reqId; 
+  targetItemCategory = itemCat;
+  targetItemStatus = itemStat;
+  
   let html = "";
   
-  // Render Baris Detail
-  for (let i = 0; i < currentHeaders.length; i++) {
-    const headerName = currentHeaders[i] ? currentHeaders[i].trim() : `Kolom ${i+1}`;
+  for (let i = 0; i < globalHeaders.length; i++) {
+    const headerName = globalHeaders[i] ? globalHeaders[i].trim() : `Kolom ${i+1}`;
     const value = rowData[i] ? rowData[i].trim() : "-";
-    
     if (headerName !== "") {
-      html += `
-        <div class="detail-row">
-          <div class="detail-label">${escapeHtml(headerName)}</div>
-          <div class="detail-value">${escapeHtml(value)}</div>
-        </div>
-      `;
+      html += `<div class="detail-row"><div class="detail-label">${escapeHtml(headerName)}</div><div class="detail-value">${escapeHtml(value)}</div></div>`;
     }
   }
 
-  // Cek Role Pengguna Saat Ini
   const userRole = sessionStorage.getItem("userRole");
   
-  // LOGIKA TAMPILAN TOMBOL BERDASARKAN ROLE (Hanya tampil jika bukan di Master WO)
-  if (activeCategory !== "master") {
-    
-    // 1. Jika Engineering & Status Pending Approval
-    if (userRole === "engineering" && activeStatus === "pending") {
-      html += `
-        <div class="action-footer" id="action-footer">
-          <button class="btn-action btn-approve" onclick="executeAction('approved')">Terima (Approve)</button>
-          <button class="btn-action btn-reject" onclick="executeAction('rejected')">Tolak (Reject)</button>
-        </div>
-        <div id="action-msg" style="text-align:center; margin-top:10px; font-size:12px; color:var(--text-muted);"></div>
-      `;
-    } 
-    
-    // 2. Jika Engineering & Status On Progress (Approved)
-    else if (userRole === "engineering" && activeStatus === "approved") {
-      html += `
-        <div class="action-footer" id="action-footer">
-          <button class="btn-action btn-approve" style="background:var(--accent-blue);" onclick="executeAction('pending_finished')">Selesaikan WO (Kirim ke Pending Finished)</button>
-        </div>
-        <div id="action-msg" style="text-align:center; margin-top:10px; font-size:12px; color:var(--text-muted);"></div>
-      `;
-    }
-
-    // 3. Jika User & Status Pending Finished
-    else if (userRole === "user" && activeStatus === "pending_finished") {
-      html += `
-        <div class="action-footer" id="action-footer">
-          <button class="btn-action btn-approve" style="background:var(--accent-green);" onclick="executeAction('finished')">Konfirmasi WO Selesai</button>
-        </div>
-        <div id="action-msg" style="text-align:center; margin-top:10px; font-size:12px; color:var(--text-muted);"></div>
-      `;
-    }
+  // LOGIKA TOMBOL AKSI BERDASARKAN STATUS TIKET AKTUAL DAN ROLE USER
+  if (userRole === "engineering" && targetItemStatus === "pending") {
+    html += `
+      <div class="action-footer" id="action-footer">
+        <button class="btn-action btn-approve" onclick="executeAction('approved')">Terima (Approve)</button>
+        <button class="btn-action btn-reject" onclick="executeAction('rejected')">Tolak (Reject)</button>
+      </div>
+      <div id="action-msg" style="text-align:center; margin-top:10px; font-size:12px; color:var(--text-muted);"></div>
+    `;
+  } 
+  else if (userRole === "engineering" && targetItemStatus === "approved") {
+    html += `
+      <div class="action-footer" id="action-footer">
+        <button class="btn-action btn-approve" style="background:var(--accent-blue);" onclick="executeAction('pending_finished')">Selesaikan WO (Kirim ke Pending Finished)</button>
+      </div>
+      <div id="action-msg" style="text-align:center; margin-top:10px; font-size:12px; color:var(--text-muted);"></div>
+    `;
+  }
+  else if (userRole === "user" && targetItemStatus === "pending_finished") {
+    html += `
+      <div class="action-footer" id="action-footer">
+        <button class="btn-action btn-approve" style="background:var(--accent-green);" onclick="executeAction('finished')">Konfirmasi WO Selesai</button>
+      </div>
+      <div id="action-msg" style="text-align:center; margin-top:10px; font-size:12px; color:var(--text-muted);"></div>
+    `;
   }
   
   modalBody.innerHTML = html;
   modalOverlay.style.display = "flex";
 }
 
-// Fungsi untuk mengirim aksi ke Apps Script API
 async function executeAction(actionType) {
   let rejectReason = "";
   let biayaWo = "";
   
-  // Prompt khusus berdasarkan jenis aksi
   if (actionType === "rejected") {
     rejectReason = prompt("Mohon masukkan alasan menolak (Reject) tiket ini:");
     if (rejectReason === null || rejectReason.trim() === "") {
@@ -1042,19 +961,13 @@ async function executeAction(actionType) {
       return;
     }
   } else if (actionType === "finished") {
-    if (!confirm(`Anda yakin mengkonfirmasi bahwa tiket ini benar-benar selesai?`)) {
-      return;
-    }
+    if (!confirm(`Anda yakin mengkonfirmasi bahwa tiket ini benar-benar selesai?`)) return;
   } else if (actionType === "approved") {
-    if (!confirm(`Anda yakin ingin menerima (Approve) tiket ini?`)) {
-      return;
-    }
+    if (!confirm(`Anda yakin ingin menerima (Approve) tiket ini?`)) return;
   }
 
   const btnFooter = document.getElementById("action-footer");
   const msgBox = document.getElementById("action-msg");
-  
-  // Matikan tombol agar tidak bisa diklik berulang kali
   const buttons = btnFooter.querySelectorAll("button");
   buttons.forEach(b => b.disabled = true);
   
@@ -1068,7 +981,7 @@ async function executeAction(actionType) {
       body: JSON.stringify({ 
         type: "action", 
         action: actionType, 
-        category: activeCategory, 
+        category: targetItemCategory, // Menggunakan kategori milik tiket tersebut
         requestId: targetRequestId,
         rejectReason: rejectReason, 
         biayaWo: biayaWo 
@@ -1080,13 +993,10 @@ async function executeAction(actionType) {
     if (result.success) {
       msgBox.innerHTML = "Berhasil! Data telah diperbarui.";
       msgBox.style.color = "var(--accent-green)";
-      
-      // Tutup modal secara otomatis dan refresh data
       setTimeout(() => {
         modalOverlay.style.display = "none";
         fetchData(); 
       }, 1500);
-      
     } else {
       msgBox.innerHTML = "Gagal: " + result.message;
       msgBox.style.color = "var(--rejected)";
@@ -1099,18 +1009,11 @@ async function executeAction(actionType) {
   }
 }
 
-btnCloseModal.addEventListener("click", () => { 
-  modalOverlay.style.display = "none"; 
-});
-
-modalOverlay.addEventListener("click", (e) => { 
-  if(e.target === modalOverlay) {
-    modalOverlay.style.display = "none"; 
-  }
-});
+btnCloseModal.addEventListener("click", () => { modalOverlay.style.display = "none"; });
+modalOverlay.addEventListener("click", (e) => { if(e.target === modalOverlay) modalOverlay.style.display = "none"; });
 
 // ============================================================================
-// LOGIKA SISTEM LOGIN & AUTHENTIKASI
+// LOGIKA LOGIN & AUTHENTIKASI
 // ============================================================================
 const loginScreen = document.getElementById("login-screen");
 const appContent = document.getElementById("app-content");
@@ -1119,7 +1022,6 @@ const loginMsg = document.getElementById("login-msg");
 const loginSubmit = document.getElementById("login-submit");
 const roleBadge = document.getElementById("user-role-badge");
 
-// Pengecekan sesi aktif saat halaman dimuat
 if (sessionStorage.getItem("loggedIn") === "true") {
   loginScreen.style.display = "none";
   appContent.style.display = "block";
@@ -1140,20 +1042,13 @@ loginForm.addEventListener("submit", async (e) => {
     const res = await fetch(LOGIN_API_URL, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ 
-        type: "login", 
-        username, 
-        password 
-      })
+      body: JSON.stringify({ type: "login", username, password })
     });
-    
     const result = await res.json();
 
     if (result.success) {
-      // Simpan status login dan role ke sistem peramban
       sessionStorage.setItem("loggedIn", "true");
       sessionStorage.setItem("userRole", result.role || "user");
-      
       loginScreen.style.display = "none";
       appContent.style.display = "block";
       roleBadge.textContent = "Akses: " + (result.role || "user").toUpperCase();
