@@ -554,6 +554,7 @@
       </div>
       
       <button id="btn-apply-filter">Terapkan Filter</button>
+      <button id="btn-export-pdf" type="button" style="background:var(--accent-blue);">Export PDF</button>
     </div>
 
     <div class="panel glass-panel" id="panel">
@@ -575,6 +576,8 @@
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script>
 // ============================================================================
 // KONFIGURASI URL
@@ -599,6 +602,10 @@ let globalHeaders = [];
 let targetRequestId = ""; 
 let targetItemCategory = ""; 
 let targetItemStatus = "";
+
+// Menyimpan hasil filter yang sedang tampil, dipakai untuk Export PDF
+let lastExportRows = [];
+let lastExportTitle = "";
 
 const mainBtns = document.querySelectorAll(".btn-main");
 const subBtns = document.querySelectorAll(".btn-sub");
@@ -651,6 +658,61 @@ filterType.addEventListener("change", () => {
 });
 
 btnApplyFilter.addEventListener("click", () => { renderData(); });
+
+function getFilterPeriodLabel() {
+  const val = filterType.value;
+  const fmt = (iso) => {
+    if (!iso) return "";
+    const [y, m, d] = iso.split("-");
+    return `${d}/${m}/${y}`;
+  };
+  if (val === "single" && date1Input.value) {
+    return `Tanggal ${fmt(date1Input.value)}`;
+  } else if (val === "range" && date1Input.value && date2Input.value) {
+    return `Rentang ${fmt(date1Input.value)} s/d ${fmt(date2Input.value)}`;
+  }
+  return "Semua Waktu";
+}
+
+async function exportToPDF() {
+  if (!window.jspdf) {
+    alert("Modul PDF belum siap dimuat, coba lagi sesaat lagi.");
+    return;
+  }
+  if (!lastExportRows || lastExportRows.length === 0) {
+    alert("Tidak ada data pada filter saat ini untuk diekspor.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
+
+  const periodLabel = getFilterPeriodLabel();
+
+  doc.setFontSize(15);
+  doc.text("SIMANTAP - " + lastExportTitle, 40, 40);
+  doc.setFontSize(10);
+  doc.setTextColor(90);
+  doc.text(`Periode data: ${periodLabel}`, 40, 58);
+  doc.text(`Diekspor pada: ${new Date().toLocaleString('id-ID')}`, 40, 72);
+  doc.setTextColor(0);
+
+  doc.autoTable({
+    startY: 88,
+    head: [["No", "Nomor WO / Request ID", "Nama Pemohon", "Kategori", "Status", "Tanggal"]],
+    body: lastExportRows,
+    styles: { fontSize: 9, cellPadding: 5 },
+    headStyles: { fillColor: [49, 130, 206], textColor: 255 },
+    alternateRowStyles: { fillColor: [245, 247, 250] }
+  });
+
+  const safeCategory = activeCategory === "master" ? "master" : activeCategory;
+  const safeStatus = activeCategory === "master" ? "semua-status" : activeStatus;
+  const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
+  doc.save(`SIMANTAP_${safeCategory}_${safeStatus}_${stamp}.pdf`);
+}
+
+document.getElementById("btn-export-pdf").addEventListener("click", exportToPDF);
 
 function parseCSVDateToISO(dateStr) {
   if (!dateStr) return "";
@@ -744,6 +806,16 @@ function renderData() {
   const d2 = date2Input.value;
   
   let filteredItems = [];
+  let exportRows = [];
+
+  // Label status yang lagi aktif (dipakai kalau bukan Master WO)
+  const activeStatusLabelMap = {
+    pending: "PENDING APPROVAL",
+    approved: "ON PROGRESS",
+    pending_finished: "PENDING FINISHED",
+    finished: "FINISHED",
+    rejected: "REJECTED"
+  };
 
   for (let i = 0; i < currentDataObjects.length; i++) {
     const itemObj = currentDataObjects[i];
@@ -763,6 +835,9 @@ function renderData() {
     if (include) {
       const req = (r[cols.idIdx] || "").trim();
       const name = (r[cols.nameIdx] || "").trim();
+      const tanggal = cols.dateIdx !== -1 ? (r[cols.dateIdx] || "-").trim() : "-";
+      const catLabel = activeCategory === "master" ? itemObj.category : activeCategory;
+      const statLabel = activeCategory === "master" ? itemObj.labelStat : (activeStatusLabelMap[itemObj.status] || itemObj.status);
       
       let topStr = req && name ? `<strong>${escapeHtml(req)}</strong> &mdash; ${escapeHtml(name)}` : escapeHtml(req || name);
       
@@ -791,8 +866,13 @@ function renderData() {
         itemCat: itemObj.category,
         itemStat: itemObj.status
       });
+
+      exportRows.push([ filteredItems.length, req || "-", name || "-", catLabel, statLabel, tanggal ]);
     }
   }
+
+  lastExportRows = exportRows;
+  lastExportTitle = title;
 
   if (filteredItems.length === 0) {
     panel.innerHTML = `<h2>${title}</h2><div class="state">Tidak ada tiket yang sesuai dengan filter.</div>`;
