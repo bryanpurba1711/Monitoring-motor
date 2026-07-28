@@ -580,7 +580,7 @@
 const SHEET_BASE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS7E84yJuZInmkqB0NJMMPpPAaGHvd9sIZHwZvzR4tROm9k9I2k6gqCd0ksKiVA4l08jJxVRF5uP-Rm/pub"; 
 
 // PERHATIAN: Masukkan link hasil DEPLOY APPS SCRIPT YANG BARU ke sini
-const LOGIN_API_URL = "https://script.google.com/macros/s/AKfycbzYmki7k1VKbxGtK4edMy-TlOEYBzgcLYz3_HEX93oddDZpkb_v38TSuc7mJwQD5RW_/exec";
+const LOGIN_API_URL = "https://script.google.com/macros/s/AKfycbz_x5SFZu9rbyH_G0UcCNaSd2-MEHo2AEStfVDUi7jyxVxVJziGkfyWbh_sh1iv564/exec";
 
 // Tambahkan GID untuk ke-6 sheet baru di bawah ini
 const SHEETS_GID = {
@@ -935,6 +935,7 @@ function showModal(originalIndex, reqId, itemCat, itemStat) {
     html += `
       <div class="action-footer" id="action-footer">
         <button class="btn-action btn-approve" style="background:var(--accent-green);" onclick="executeAction('finished')">Konfirmasi WO Selesai</button>
+        <button class="btn-action btn-reject" style="background:var(--accent-orange);" onclick="executeAction('revert_to_progress')">Tidak Sesuai (Kembalikan)</button>
       </div>
       <div id="action-msg" style="text-align:center; margin-top:10px; font-size:12px; color:var(--text-muted);"></div>
     `;
@@ -958,6 +959,12 @@ async function executeAction(actionType) {
     biayaWo = prompt("Mohon masukkan total Biaya WO untuk tiket ini:");
     if (biayaWo === null || biayaWo.trim() === "") {
       alert("Aksi dibatalkan: Biaya WO wajib diisi!");
+      return;
+    }
+  } else if (actionType === "revert_to_progress") {
+    rejectReason = prompt("Perbaikan tidak sesuai? Mohon masukkan alasan/catatan untuk dikembalikan ke On Progress:");
+    if (rejectReason === null || rejectReason.trim() === "") {
+      alert("Aksi dibatalkan: Alasan pengembalian wajib diisi!");
       return;
     }
   } else if (actionType === "finished") {
