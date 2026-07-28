@@ -370,6 +370,7 @@
     border-top: 1px dashed rgba(255,255,255,0.2);
     display: flex;
     gap: 12px;
+    flex-wrap: wrap; /* Agar tombol yang banyak tidak tertumpuk di layar kecil */
   }
 
   .btn-action {
@@ -380,9 +381,10 @@
     border: none;
     cursor: pointer;
     font-family: inherit;
-    font-size: 14px;
+    font-size: 13px;
     color: #fff;
     transition: opacity 0.2s;
+    min-width: 150px;
   }
 
   .btn-action:hover { 
@@ -579,9 +581,8 @@
 const SHEET_BASE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS7E84yJuZInmkqB0NJMMPpPAaGHvd9sIZHwZvzR4tROm9k9I2k6gqCd0ksKiVA4l08jJxVRF5uP-Rm/pub"; 
 
 // PERHATIAN: Masukkan link hasil DEPLOY APPS SCRIPT YANG BARU ke sini
-const LOGIN_API_URL = "https://script.google.com/macros/s/AKfycbw5VCSsd_PIKLn3oDzhIU-1Nwz9jr_Ccr1SPqSoG2xOlzZSfMgAPljDyLzHbRev4h9Q/exec";
+const LOGIN_API_URL = "https://script.google.com/macros/s/AKfycbwhTHlPae2GzSVsk2Ss5T8_axjbJwfF89Z8J2e7oJlLbe2m5Ep15OiCkRYeIAvK--_s/exec";
 
-// Konfigurasi GID
 const SHEETS_GID = {
   master: "172504616",
 
@@ -589,22 +590,22 @@ const SHEETS_GID = {
   mechanical_pending: "83528035",
   mechanical_approved: "709234165",
   mechanical_rejected: "1634138009",
-  mechanical_pending_finished: "1413084397",
-  mechanical_finished: "624075101",
+  mechanical_pending_finished: "MASUKKAN_GID_DISINI",
+  mechanical_finished: "MASUKKAN_GID_DISINI",
 
   // ELECTRICAL
   electrical_pending: "1373466339",
   electrical_approved: "1933576686",
   electrical_rejected: "1253140954",
-  electrical_pending_finished: "1392154686",
-  electrical_finished: "854971381",
+  electrical_pending_finished: "MASUKKAN_GID_DISINI",
+  electrical_finished: "MASUKKAN_GID_DISINI",
 
   // MODIFICATION
   modification_pending: "2072013900",
   modification_approved: "697781984",
   modification_rejected: "309859811",
-  modification_pending_finished: "757960950",
-  modification_finished: "1272375466"
+  modification_pending_finished: "MASUKKAN_GID_DISINI",
+  modification_finished: "MASUKKAN_GID_DISINI"
 };
 
 // ============================================================================
@@ -959,6 +960,7 @@ async function executeAction(actionType) {
   let rejectReason = "";
   let biayaWo = "";
   
+  // Prompt khusus berdasarkan jenis aksi
   if (actionType === "rejected") {
     rejectReason = prompt("Mohon masukkan alasan menolak (Reject) tiket ini:");
     if (rejectReason === null || rejectReason.trim() === "") {
