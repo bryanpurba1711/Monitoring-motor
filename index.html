@@ -371,10 +371,12 @@
     border-top: 1px dashed rgba(255,255,255,0.2);
     display: flex;
     gap: 12px;
+    flex-wrap: wrap;
   }
 
   .btn-action {
     flex: 1;
+    min-width: 140px;
     padding: 12px;
     font-weight: 600;
     border-radius: 8px;
@@ -575,36 +577,13 @@
 
 <script>
 // ============================================================================
-// KONFIGURASI URL & GID
+// KONFIGURASI URL
 // ============================================================================
-const SHEET_BASE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS7E84yJuZInmkqB0NJMMPpPAaGHvd9sIZHwZvzR4tROm9k9I2k6gqCd0ksKiVA4l08jJxVRF5uP-Rm/pub"; 
-
-// PERHATIAN: Masukkan link hasil DEPLOY APPS SCRIPT YANG BARU ke sini
-const LOGIN_API_URL = "https://script.google.com/macros/s/AKfycbz_x5SFZu9rbyH_G0UcCNaSd2-MEHo2AEStfVDUi7jyxVxVJziGkfyWbh_sh1iv564/exec";
-
-// Tambahkan GID untuk ke-6 sheet baru di bawah ini
-const SHEETS_GID = {
-  // MECHANICAL
-  mechanical_pending: "83528035",
-  mechanical_approved: "709234165",
-  mechanical_rejected: "1634138009",
-  mechanical_pending_finished: "1413084397",
-  mechanical_finished: "624075101",
-
-  // ELECTRICAL
-  electrical_pending: "1373466339",
-  electrical_approved: "1933576686",
-  electrical_rejected: "1253140954",
-  electrical_pending_finished: "1392154686",
-  electrical_finished: "854971381",
-
-  // MODIFICATION
-  modification_pending: "2072013900",
-  modification_approved: "697781984",
-  modification_rejected: "309859811",
-  modification_pending_finished: "757960950",
-  modification_finished: "1272375466"
-};
+// PERHATIAN: Masukkan link hasil DEPLOY APPS SCRIPT (Web App) ke sini.
+// URL ini sekarang dipakai untuk 3 hal: login, action (approve/reject/dst),
+// dan pengambilan data (doGet) -- data diambil LANGSUNG dari Spreadsheet,
+// bukan lagi lewat link "Publish to web" CSV yang punya jeda cache dari Google.
+const LOGIN_API_URL = "https://script.google.com/macros/s/AKfycbzImuZaYnjfRZjGqGNkmiKC23CPw9Vr4Tmj586xLTkmRqoveHCR96Q98ovQNXTFquod/exec";
 
 // ============================================================================
 // STATE APLIKASI
@@ -687,31 +666,6 @@ function parseCSVDateToISO(dateStr) {
   return cleanStr; 
 }
 
-function csvUrl(gid){
-  return `${SHEET_BASE}?gid=${gid}&single=true&output=csv`;
-}
-
-function parseCSV(text) {
-  const rows = [];
-  let row = [], field = "", inQuotes = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (inQuotes) {
-      if (c === '"') {
-        if (text[i+1] === '"') { field += '"'; i++; } else { inQuotes = false; }
-      } else { field += c; }
-    } else {
-      if (c === '"') { inQuotes = true; } 
-      else if (c === ',') { row.push(field); field = ""; } 
-      else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ""; } 
-      else if (c === '\r') { } 
-      else { field += c; }
-    }
-  }
-  if (field.length || row.length) { row.push(field); rows.push(row); }
-  return rows.filter(r => r.some(f => f.trim() !== ""));
-}
-
 function findColumnsIndex(header) {
   const woIdx = header.findIndex(h => h.toLowerCase().trim().includes("nomor wo"));
   const reqIdx = header.findIndex(h => h.toLowerCase().trim().includes("request id"));
@@ -724,69 +678,48 @@ function findColumnsIndex(header) {
   };
 }
 
+// ============================================================================
+// AMBIL DATA -- LANGSUNG dari Spreadsheet lewat doGet (bukan CSV publish)
+// ============================================================================
 async function fetchData() {
   panel.innerHTML = `<div class="state">Memuat data...</div>`;
   currentDataObjects = [];
   globalHeaders = [];
 
   try {
-    // JIKA MASTER WO: AMBIL 9 SHEET SEKALIGUS
     if (activeCategory === "master") {
-      const masterSources = [
-        { gid: SHEETS_GID.mechanical_approved, cat: "mechanical", stat: "approved", labelStat: "ON PROGRESS" },
-        { gid: SHEETS_GID.mechanical_pending_finished, cat: "mechanical", stat: "pending_finished", labelStat: "PENDING FINISHED" },
-        { gid: SHEETS_GID.mechanical_finished, cat: "mechanical", stat: "finished", labelStat: "FINISHED" },
-        { gid: SHEETS_GID.electrical_approved, cat: "electrical", stat: "approved", labelStat: "ON PROGRESS" },
-        { gid: SHEETS_GID.electrical_pending_finished, cat: "electrical", stat: "pending_finished", labelStat: "PENDING FINISHED" },
-        { gid: SHEETS_GID.electrical_finished, cat: "electrical", stat: "finished", labelStat: "FINISHED" },
-        { gid: SHEETS_GID.modification_approved, cat: "modification", stat: "approved", labelStat: "ON PROGRESS" },
-        { gid: SHEETS_GID.modification_pending_finished, cat: "modification", stat: "pending_finished", labelStat: "PENDING FINISHED" },
-        { gid: SHEETS_GID.modification_finished, cat: "modification", stat: "finished", labelStat: "FINISHED" }
-      ];
-      
-      const fetches = masterSources.map(src => fetch(csvUrl(src.gid)).catch(() => null));
-      const responses = await Promise.all(fetches);
-      
-      for (let i = 0; i < responses.length; i++) {
-        if (!responses[i] || !responses[i].ok) continue;
-        const text = await responses[i].text();
-        const rows = parseCSV(text);
-        
-        if (rows.length < 2) continue;
-        if (globalHeaders.length === 0) globalHeaders = rows[0]; 
-        
-        const srcInfo = masterSources[i];
-        for (let j = 1; j < rows.length; j++) {
-          currentDataObjects.push({
-            rowData: rows[j],
-            category: srcInfo.cat,
-            status: srcInfo.stat,
-            labelStat: srcInfo.labelStat
-          });
-        }
-      }
+      const res = await fetch(`${LOGIN_API_URL}?mode=master&_=${Date.now()}`);
+      if (!res.ok) throw new Error("Gagal mengambil data master (status " + res.status + ")");
+      const result = await res.json();
+      if (!result.success) throw new Error(result.message || "Gagal memuat data master");
 
-    // JIKA MENU BIASA: AMBIL 1 SHEET SAJA
+      globalHeaders = result.headers || [];
+      currentDataObjects = (result.items || []).map(it => ({
+        rowData: it.rowData,
+        category: it.category,
+        status: it.status,
+        labelStat: it.labelStat
+      }));
+
     } else {
-      const sheetKey = `${activeCategory}_${activeStatus}`;
-      const gid = SHEETS_GID[sheetKey];
-      
-      const res = await fetch(csvUrl(gid));
-      if (!res.ok) throw new Error("Gagal mengambil data");
-      const text = await res.text();
-      const rows = parseCSV(text);
+      const params = new URLSearchParams({
+        mode: "single",
+        category: activeCategory,
+        status: activeStatus,
+        _: Date.now()
+      });
+      const res = await fetch(`${LOGIN_API_URL}?${params.toString()}`);
+      if (!res.ok) throw new Error("Gagal mengambil data (status " + res.status + ")");
+      const result = await res.json();
+      if (!result.success) throw new Error(result.message || "Gagal memuat data");
 
-      if (rows.length >= 2) {
-        globalHeaders = rows[0];
-        for (let j = 1; j < rows.length; j++) {
-          currentDataObjects.push({
-            rowData: rows[j],
-            category: activeCategory,
-            status: activeStatus,
-            labelStat: "" 
-          });
-        }
-      }
+      globalHeaders = result.headers || [];
+      currentDataObjects = (result.rows || []).map(r => ({
+        rowData: r,
+        category: activeCategory,
+        status: activeStatus,
+        labelStat: ""
+      }));
     }
 
     if (currentDataObjects.length === 0) {
@@ -914,6 +847,9 @@ function showModal(originalIndex, reqId, itemCat, itemStat) {
   const userRole = sessionStorage.getItem("userRole");
   
   // LOGIKA TOMBOL AKSI BERDASARKAN STATUS TIKET AKTUAL DAN ROLE USER
+  // (Berlaku sama baik dilihat dari tab Master WO maupun dari tab departemen
+  // Mechanical/Electrical/Modification, karena itemCat & itemStat selalu
+  // mengikuti data tiket itu sendiri, bukan tab yang sedang aktif.)
   if (userRole === "engineering" && targetItemStatus === "pending") {
     html += `
       <div class="action-footer" id="action-footer">
@@ -935,7 +871,7 @@ function showModal(originalIndex, reqId, itemCat, itemStat) {
     html += `
       <div class="action-footer" id="action-footer">
         <button class="btn-action btn-approve" style="background:var(--accent-green);" onclick="executeAction('finished')">Konfirmasi WO Selesai</button>
-        <button class="btn-action btn-reject" style="background:var(--accent-orange);" onclick="executeAction('revert_to_progress')">Tidak Sesuai (Kembalikan)</button>
+        <button class="btn-action btn-reject" onclick="executeAction('reopen')">Belum Sesuai (Kembalikan)</button>
       </div>
       <div id="action-msg" style="text-align:center; margin-top:10px; font-size:12px; color:var(--text-muted);"></div>
     `;
@@ -961,16 +897,14 @@ async function executeAction(actionType) {
       alert("Aksi dibatalkan: Biaya WO wajib diisi!");
       return;
     }
-  } else if (actionType === "revert_to_progress") {
-    rejectReason = prompt("Perbaikan tidak sesuai? Mohon masukkan alasan/catatan untuk dikembalikan ke On Progress:");
-    if (rejectReason === null || rejectReason.trim() === "") {
-      alert("Aksi dibatalkan: Alasan pengembalian wajib diisi!");
-      return;
-    }
   } else if (actionType === "finished") {
     if (!confirm(`Anda yakin mengkonfirmasi bahwa tiket ini benar-benar selesai?`)) return;
   } else if (actionType === "approved") {
     if (!confirm(`Anda yakin ingin menerima (Approve) tiket ini?`)) return;
+  } else if (actionType === "reopen") {
+    rejectReason = prompt("Mohon masukkan catatan kenapa hasil perbaikan belum sesuai (boleh dikosongkan):");
+    if (rejectReason === null) return; // user menekan Cancel pada prompt
+    if (!confirm("WO ini akan dikembalikan ke status ON PROGRESS dengan nomor WO yang SAMA (tidak dibuat WO baru). Lanjutkan?")) return;
   }
 
   const btnFooter = document.getElementById("action-footer");
