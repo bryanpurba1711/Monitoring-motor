@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Master WO</title>
+<title>SIMANTAP</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -271,7 +271,6 @@
   
   .list-text { flex-grow: 1; }
   
-  /* Desain Badge Identitas untuk Master WO */
   .id-badges { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
   .badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; border: 1px solid transparent; }
   
@@ -580,10 +579,12 @@
 const SHEET_BASE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS7E84yJuZInmkqB0NJMMPpPAaGHvd9sIZHwZvzR4tROm9k9I2k6gqCd0ksKiVA4l08jJxVRF5uP-Rm/pub"; 
 
 // PERHATIAN: Masukkan link hasil DEPLOY APPS SCRIPT YANG BARU ke sini
-const LOGIN_API_URL = "https://script.google.com/macros/s/AKfycbz07qfLOQt2Rch3fSardYHYM5FLusXn6fhE_ObYD7XzVmbGYUQBOUHmB8qFqGCIDP1O/exec";
+const LOGIN_API_URL = "https://script.google.com/macros/s/AKfycbw5VCSsd_PIKLn3oDzhIU-1Nwz9jr_Ccr1SPqSoG2xOlzZSfMgAPljDyLzHbRev4h9Q/exec";
 
-// Tambahkan GID untuk ke-6 sheet baru di bawah ini
+// Konfigurasi GID
 const SHEETS_GID = {
+  master: "172504616",
+
   // MECHANICAL
   mechanical_pending: "83528035",
   mechanical_approved: "709234165",
@@ -637,6 +638,7 @@ mainBtns.forEach(btn => {
     } else {
       subMenuContainer.style.display = "flex";
     }
+    
     fetchData();
   });
 });
@@ -914,30 +916,39 @@ function showModal(originalIndex, reqId, itemCat, itemStat) {
   const userRole = sessionStorage.getItem("userRole");
   
   // LOGIKA TOMBOL AKSI BERDASARKAN STATUS TIKET AKTUAL DAN ROLE USER
-  if (userRole === "engineering" && targetItemStatus === "pending") {
-    html += `
-      <div class="action-footer" id="action-footer">
-        <button class="btn-action btn-approve" onclick="executeAction('approved')">Terima (Approve)</button>
-        <button class="btn-action btn-reject" onclick="executeAction('rejected')">Tolak (Reject)</button>
-      </div>
-      <div id="action-msg" style="text-align:center; margin-top:10px; font-size:12px; color:var(--text-muted);"></div>
-    `;
-  } 
-  else if (userRole === "engineering" && targetItemStatus === "approved") {
-    html += `
-      <div class="action-footer" id="action-footer">
-        <button class="btn-action btn-approve" style="background:var(--accent-blue);" onclick="executeAction('pending_finished')">Selesaikan WO (Kirim ke Pending Finished)</button>
-      </div>
-      <div id="action-msg" style="text-align:center; margin-top:10px; font-size:12px; color:var(--text-muted);"></div>
-    `;
-  }
-  else if (userRole === "user" && targetItemStatus === "pending_finished") {
-    html += `
-      <div class="action-footer" id="action-footer">
-        <button class="btn-action btn-approve" style="background:var(--accent-green);" onclick="executeAction('finished')">Konfirmasi WO Selesai</button>
-      </div>
-      <div id="action-msg" style="text-align:center; margin-top:10px; font-size:12px; color:var(--text-muted);"></div>
-    `;
+  if (activeCategory !== "master") {
+    
+    // 1. Jika Engineering & Status Pending Approval
+    if (userRole === "engineering" && targetItemStatus === "pending") {
+      html += `
+        <div class="action-footer" id="action-footer">
+          <button class="btn-action btn-approve" onclick="executeAction('approved')">Terima (Approve)</button>
+          <button class="btn-action btn-reject" onclick="executeAction('rejected')">Tolak (Reject)</button>
+        </div>
+        <div id="action-msg" style="text-align:center; margin-top:10px; font-size:12px; color:var(--text-muted);"></div>
+      `;
+    } 
+    
+    // 2. Jika Engineering & Status On Progress (Approved)
+    else if (userRole === "engineering" && targetItemStatus === "approved") {
+      html += `
+        <div class="action-footer" id="action-footer">
+          <button class="btn-action btn-approve" style="background:var(--accent-blue);" onclick="executeAction('pending_finished')">Selesaikan WO (Kirim ke Pending Finished)</button>
+        </div>
+        <div id="action-msg" style="text-align:center; margin-top:10px; font-size:12px; color:var(--text-muted);"></div>
+      `;
+    }
+
+    // 3. Jika User & Status Pending Finished
+    else if (userRole === "user" && targetItemStatus === "pending_finished") {
+      html += `
+        <div class="action-footer" id="action-footer">
+          <button class="btn-action btn-approve" style="background:var(--accent-green);" onclick="executeAction('finished')">Konfirmasi Selesai</button>
+          <button class="btn-action btn-reject" style="background:var(--accent-orange);" onclick="executeAction('revert_to_progress')">Tidak Sesuai (Kembalikan)</button>
+        </div>
+        <div id="action-msg" style="text-align:center; margin-top:10px; font-size:12px; color:var(--text-muted);"></div>
+      `;
+    }
   }
   
   modalBody.innerHTML = html;
@@ -958,6 +969,12 @@ async function executeAction(actionType) {
     biayaWo = prompt("Mohon masukkan total Biaya WO untuk tiket ini:");
     if (biayaWo === null || biayaWo.trim() === "") {
       alert("Aksi dibatalkan: Biaya WO wajib diisi!");
+      return;
+    }
+  } else if (actionType === "revert_to_progress") {
+    rejectReason = prompt("Perbaikan tidak sesuai? Mohon masukkan alasan/catatan untuk dikembalikan ke On Progress:");
+    if (rejectReason === null || rejectReason.trim() === "") {
+      alert("Aksi dibatalkan: Alasan pengembalian wajib diisi!");
       return;
     }
   } else if (actionType === "finished") {
@@ -981,7 +998,7 @@ async function executeAction(actionType) {
       body: JSON.stringify({ 
         type: "action", 
         action: actionType, 
-        category: targetItemCategory, // Menggunakan kategori milik tiket tersebut
+        category: targetItemCategory, 
         requestId: targetRequestId,
         rejectReason: rejectReason, 
         biayaWo: biayaWo 
