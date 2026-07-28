@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WORK ORDER</title>
+<title>Dashboard Master WO</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -27,7 +27,7 @@
     font-family: 'Poppins', sans-serif;
     color: var(--text-main);
     min-height: 100vh;
-    /* Animasi Gradasi Sinematik: Biru gelap, Oranye gelap, Hijau gelap */
+    /* Animasi Gradasi Sinematik */
     background: linear-gradient(-45deg, #0b192c, #1a365d, #5c3a21, #0f3a24);
     background-size: 400% 400%;
     animation: gradientBG 15s ease infinite;
@@ -144,6 +144,7 @@
     gap: 12px;
     margin-bottom: 24px;
     justify-content: center;
+    flex-wrap: wrap; /* Agar rapi jika tombol banyak */
   }
 
   .btn-sub {
@@ -586,10 +587,12 @@
       <button class="btn-main glass-panel" data-category="modification">Modification</button>
     </div>
 
-    <!-- Sub Menu (Status) -->
+    <!-- Sub Menu (Status) dengan Tambahan 2 Status Baru -->
     <div class="sub-menu" id="sub-menu-container" style="display:none;">
       <button class="btn-sub active" data-status="pending">Pending Approval</button>
-      <button class="btn-sub" data-status="approved">Approved</button>
+      <button class="btn-sub" data-status="approved">On Progress</button>
+      <button class="btn-sub" data-status="pending_finished">Pending Finished</button>
+      <button class="btn-sub" data-status="finished">Finished</button>
       <button class="btn-sub" data-status="rejected">Rejected</button>
     </div>
 
@@ -639,20 +642,33 @@
 // ============================================================================
 const SHEET_BASE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS7E84yJuZInmkqB0NJMMPpPAaGHvd9sIZHwZvzR4tROm9k9I2k6gqCd0ksKiVA4l08jJxVRF5uP-Rm/pub"; 
 
-// PERHATIAN: Masukkan link hasil DEPLOY APPS SCRIPT YANG BARU (Langkah 2) ke sini
-const LOGIN_API_URL = "https://script.google.com/macros/s/AKfycbwA5WRPJz-9xsK_NxTgZnro3O7NZ0mKJ7rSJblRF9xJae3_bD3IbbovHDTsEfJlaaRP/exec";
+// PERHATIAN: Masukkan link hasil DEPLOY APPS SCRIPT YANG BARU ke sini
+const LOGIN_API_URL = "MASUKKAN_LINK_WEB_APP_APPS_SCRIPT_TERBARU_DISINI";
 
+// Tambahkan GID untuk ke-6 sheet baru di bawah ini jika sudah dibuat
 const SHEETS_GID = {
   master: "172504616",
+
+  // MECHANICAL
   mechanical_pending: "83528035",
   mechanical_approved: "709234165",
   mechanical_rejected: "1634138009",
+  mechanical_pending_finished: "1413084397",
+  mechanical_finished: "624075101",
+
+  // ELECTRICAL
   electrical_pending: "1373466339",
   electrical_approved: "1933576686",
   electrical_rejected: "1253140954",
+  electrical_pending_finished: "1392154686",
+  electrical_finished: "854971381",
+
+  // MODIFICATION
   modification_pending: "2072013900",
   modification_approved: "697781984",
-  modification_rejected: "309859811"
+  modification_rejected: "309859811",
+  modification_pending_finished: "757960950",
+  modification_finished: "1272375466"
 };
 
 // ============================================================================
@@ -663,7 +679,7 @@ let activeStatus = "pending";
 
 let currentHeaders = [];
 let currentDataRows = [];
-let targetRequestId = ""; // Menyimpan ID spesifik saat modal terbuka untuk fungsi action
+let targetRequestId = ""; 
 
 // ============================================================================
 // LOGIKA NAVIGASI (MENU UTAMA & SUB MENU)
@@ -677,18 +693,15 @@ mainBtns.forEach(btn => {
   btn.addEventListener("click", () => {
     activeCategory = btn.getAttribute("data-category");
     
-    // Ubah status tombol aktif
     mainBtns.forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
 
-    // Sembunyikan sub-menu jika berada di Master WO
     if (activeCategory === "master") {
       subMenuContainer.style.display = "none";
     } else {
       subMenuContainer.style.display = "flex";
     }
     
-    // Panggil fungsi ambil data baru
     fetchData();
   });
 });
@@ -697,7 +710,6 @@ subBtns.forEach(btn => {
   btn.addEventListener("click", () => {
     activeStatus = btn.getAttribute("data-status");
     
-    // Ubah status sub-tombol aktif
     subBtns.forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
     
@@ -808,36 +820,78 @@ function findColumnsIndex(header) {
 }
 
 async function fetchData() {
-  const sheetKey = activeCategory === "master" ? "master" : `${activeCategory}_${activeStatus}`;
-  const gid = SHEETS_GID[sheetKey];
-  let title = activeCategory === "master" ? "Semua Data Master WO" : `Data ${activeCategory} - ${activeStatus}`;
-  
-  panel.innerHTML = `<div class="state">Memuat ${title}...</div>`;
+  panel.innerHTML = `<div class="state">Memuat data...</div>`;
 
   try {
-    const res = await fetch(csvUrl(gid));
-    if (!res.ok) throw new Error("Gagal mengambil data (status " + res.status + ")");
-    const text = await res.text();
-    const rows = parseCSV(text);
+    // JIKA MASTER WO DIPILIH: GABUNGKAN 3 SHEET ON PROGRESS SECARA OTOMATIS
+    if (activeCategory === "master") {
+      const gids = [
+        SHEETS_GID.mechanical_approved,
+        SHEETS_GID.electrical_approved,
+        SHEETS_GID.modification_approved
+      ];
+      
+      let combinedRows = [];
+      let masterHeaders = [];
+      
+      // Fetching ketiga data secara bersamaan (Paralel)
+      const fetches = gids.map(gid => fetch(csvUrl(gid)));
+      const responses = await Promise.all(fetches);
+      
+      for (let i = 0; i < responses.length; i++) {
+        if (!responses[i].ok) continue;
+        const text = await responses[i].text();
+        const rows = parseCSV(text);
+        
+        if (rows.length < 2) continue;
+        
+        if (masterHeaders.length === 0) {
+          masterHeaders = rows[0]; 
+        }
+        
+        combinedRows = combinedRows.concat(rows.slice(1));
+      }
+      
+      currentHeaders = masterHeaders;
+      currentDataRows = combinedRows;
 
-    if (rows.length < 2) {
-      panel.innerHTML = `<h2>${title}</h2><div class="state error">Data kosong.</div>`;
-      currentHeaders = [];
-      currentDataRows = [];
-      return;
+      if (currentDataRows.length === 0) {
+        panel.innerHTML = `<h2>Semua Data Master WO (On Progress)</h2><div class="state error">Tidak ada tiket On Progress saat ini.</div>`;
+        return;
+      }
+      
+      renderData();
+
+    // JIKA MENU BIASA DIPILIH
+    } else {
+      const sheetKey = `${activeCategory}_${activeStatus}`;
+      const gid = SHEETS_GID[sheetKey];
+      let title = `Data ${activeCategory} - ${activeStatus}`;
+      
+      const res = await fetch(csvUrl(gid));
+      if (!res.ok) throw new Error("Gagal mengambil data (status " + res.status + ")");
+      const text = await res.text();
+      const rows = parseCSV(text);
+
+      if (rows.length < 2) {
+        panel.innerHTML = `<h2>${title}</h2><div class="state error">Data kosong.</div>`;
+        currentHeaders = [];
+        currentDataRows = [];
+        return;
+      }
+
+      currentHeaders = rows[0];
+      currentDataRows = rows.slice(1);
+      
+      renderData(); 
     }
-
-    currentHeaders = rows[0];
-    currentDataRows = rows.slice(1);
-    
-    renderData(); 
   } catch (err) {
     panel.innerHTML = `<h2>Data Error</h2><div class="state error">Gagal memuat: ${escapeHtml(err.message)}</div>`;
   }
 }
 
 function renderData() {
-  let title = activeCategory === "master" ? "Semua Data Master WO" : `Data ${activeCategory} - ${activeStatus}`;
+  let title = activeCategory === "master" ? "Semua Data Master WO (On Progress)" : `Data ${activeCategory} - ${activeStatus}`;
   const cols = findColumnsIndex(currentHeaders);
   
   const filterVal = filterType.value;
@@ -901,7 +955,7 @@ function escapeHtml(str){
 }
 
 // ============================================================================
-// LOGIKA MODAL & ACTION (APPROVE / REJECT UNTUK ENGINEERING)
+// LOGIKA MODAL & ACTION ROLE BASED
 // ============================================================================
 const modalOverlay = document.getElementById("modal-overlay");
 const modalBody = document.getElementById("modal-body");
@@ -909,7 +963,7 @@ const btnCloseModal = document.getElementById("modal-close");
 
 function showModal(originalIndex, reqId) {
   const rowData = currentDataRows[originalIndex];
-  targetRequestId = reqId; // Simpan ID ini untuk digunakan oleh tombol aksi (approve/reject)
+  targetRequestId = reqId; // Simpan ID ini untuk digunakan oleh tombol aksi
   let html = "";
   
   // Render Baris Detail
@@ -930,18 +984,39 @@ function showModal(originalIndex, reqId) {
   // Cek Role Pengguna Saat Ini
   const userRole = sessionStorage.getItem("userRole");
   
-  // Tampilkan Tombol Approve/Reject HANYA JIKA:
-  // 1. Role adalah engineering
-  // 2. Status menu yang terbuka adalah "pending"
-  // 3. Bukan di tab "Master WO"
-  if (userRole === "engineering" && activeStatus === "pending" && activeCategory !== "master") {
-    html += `
-      <div class="action-footer" id="action-footer">
-        <button class="btn-action btn-approve" onclick="executeAction('approved')">Terima (Approve)</button>
-        <button class="btn-action btn-reject" onclick="executeAction('rejected')">Tolak (Reject)</button>
-      </div>
-      <div id="action-msg" style="text-align:center; margin-top:10px; font-size:12px; color:var(--text-muted);"></div>
-    `;
+  // LOGIKA TAMPILAN TOMBOL BERDASARKAN ROLE (Hanya tampil jika bukan di Master WO)
+  if (activeCategory !== "master") {
+    
+    // 1. Jika Engineering & Status Pending Approval
+    if (userRole === "engineering" && activeStatus === "pending") {
+      html += `
+        <div class="action-footer" id="action-footer">
+          <button class="btn-action btn-approve" onclick="executeAction('approved')">Terima (Approve)</button>
+          <button class="btn-action btn-reject" onclick="executeAction('rejected')">Tolak (Reject)</button>
+        </div>
+        <div id="action-msg" style="text-align:center; margin-top:10px; font-size:12px; color:var(--text-muted);"></div>
+      `;
+    } 
+    
+    // 2. Jika Engineering & Status On Progress (Approved)
+    else if (userRole === "engineering" && activeStatus === "approved") {
+      html += `
+        <div class="action-footer" id="action-footer">
+          <button class="btn-action btn-approve" style="background:var(--accent-blue);" onclick="executeAction('pending_finished')">Selesaikan WO (Kirim ke Pending Finished)</button>
+        </div>
+        <div id="action-msg" style="text-align:center; margin-top:10px; font-size:12px; color:var(--text-muted);"></div>
+      `;
+    }
+
+    // 3. Jika User & Status Pending Finished
+    else if (userRole === "user" && activeStatus === "pending_finished") {
+      html += `
+        <div class="action-footer" id="action-footer">
+          <button class="btn-action btn-approve" style="background:var(--accent-green);" onclick="executeAction('finished')">Konfirmasi WO Selesai</button>
+        </div>
+        <div id="action-msg" style="text-align:center; margin-top:10px; font-size:12px; color:var(--text-muted);"></div>
+      `;
+    }
   }
   
   modalBody.innerHTML = html;
@@ -951,15 +1026,26 @@ function showModal(originalIndex, reqId) {
 // Fungsi untuk mengirim aksi ke Apps Script API
 async function executeAction(actionType) {
   let rejectReason = "";
+  let biayaWo = "";
   
-  // Meminta konfirmasi atau alasan sebelum memproses aksi
+  // Prompt khusus berdasarkan jenis aksi
   if (actionType === "rejected") {
     rejectReason = prompt("Mohon masukkan alasan menolak (Reject) tiket ini:");
     if (rejectReason === null || rejectReason.trim() === "") {
       alert("Aksi dibatalkan: Alasan penolakan wajib diisi!");
       return;
     }
-  } else {
+  } else if (actionType === "pending_finished") {
+    biayaWo = prompt("Mohon masukkan total Biaya WO untuk tiket ini:");
+    if (biayaWo === null || biayaWo.trim() === "") {
+      alert("Aksi dibatalkan: Biaya WO wajib diisi!");
+      return;
+    }
+  } else if (actionType === "finished") {
+    if (!confirm(`Anda yakin mengkonfirmasi bahwa tiket ini benar-benar selesai?`)) {
+      return;
+    }
+  } else if (actionType === "approved") {
     if (!confirm(`Anda yakin ingin menerima (Approve) tiket ini?`)) {
       return;
     }
@@ -984,7 +1070,8 @@ async function executeAction(actionType) {
         action: actionType, 
         category: activeCategory, 
         requestId: targetRequestId,
-        rejectReason: rejectReason // Mengirim alasan reject ke server
+        rejectReason: rejectReason, 
+        biayaWo: biayaWo 
       })
     });
     
@@ -1054,7 +1141,7 @@ loginForm.addEventListener("submit", async (e) => {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({ 
-        type: "login", // Info tipe request untuk backend yang baru
+        type: "login", 
         username, 
         password 
       })
